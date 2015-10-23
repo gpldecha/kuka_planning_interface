@@ -1,4 +1,4 @@
-#include "peg_hole_kuka/pour_action.h"
+#include "pour_kuka/pour_action_server.h"
 #include <cmath>
 
 Pour_action_server::Pour_action_server(ros::NodeHandle&   nh,
@@ -46,10 +46,14 @@ void Pour_action_server::initialize() {
     ROS_INFO_STREAM("Selected Action Mode: " << ad);
 }
 
-bool Pour_action_server::executeCB(asrv::alib_server& as_, asrv::alib_feedback& feedback_,const lasa_action_planners::PLAN2CTRLGoalConstPtr & goal){
+bool Pour_action_server::executeCB(asrv::alib_server&                                 as_,
+                                   asrv::alib_feedback&                               feedback_,
+                                   const lasa_action_planners::PLAN2CTRLGoalConstPtr& goal,
+                                   PouringPhase phase)
+{
 
 
-    if(goal->action_name == "home"){
+   /* if(goal->action_name == "home"){
         return learned_model_execution(PHASEHOME,as_,feedback_,goal);
     }else if(goal->action_name == "back"){
         return learned_model_execution(PHASEBACK,as_,feedback_,goal);
@@ -57,7 +61,9 @@ bool Pour_action_server::executeCB(asrv::alib_server& as_, asrv::alib_feedback& 
         return learned_model_execution(PHASEPOUR,as_,feedback_,goal);
     }else{
         return false;
-    }
+    }*/
+
+    return learned_model_execution(phase,as_,feedback_,goal);
 }
 
 bool Pour_action_server::learned_model_execution(PouringPhase                phase,

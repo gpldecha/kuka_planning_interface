@@ -3,7 +3,7 @@
 
 	<arg name="action_server_name"  default="kuka_server" />
 
-	<node name="pour_server_node" pkg="peg_hole_kuka" type="pour_server_node" required="true" output="screen">
+	<node name="pour_server_node" pkg="pour_kuka" type="pour_server_node" required="true" output="screen">
 		<param name="action_server_name" value="$(arg action_server_name)"/>
   		<param name="action_mode" value="lasa_fixed"/>
   		<param name="simulation" value="false" />

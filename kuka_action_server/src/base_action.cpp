@@ -10,6 +10,7 @@ Base_action::Base_action(ros::NodeHandle&   nh,
     pub_        = nh.advertise<geometry_msgs::PoseStamped>(ee_cmd_pos_topic, 1);
     pub_ft_     = nh.advertise<geometry_msgs::WrenchStamped>(ee_cmd_ft_topic, 1);
 
+
 }
 
 void Base_action::eeStateCallback(const geometry_msgs::PoseStampedConstPtr& msg) {

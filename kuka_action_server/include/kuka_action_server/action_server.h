@@ -1,6 +1,15 @@
 #ifndef ACTION_SERVER_H_
 #define ACTION_SERVER_H_
 
+/**
+    Action Server
+
+    This class cacts as the main register for indiviudal implemenations of actions
+
+
+
+  **/
+
 #include <ros/ros.h>
 //-- TF Stuff --//
 #include <tf/transform_broadcaster.h>

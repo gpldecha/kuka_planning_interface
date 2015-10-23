@@ -12,7 +12,7 @@ class Pour_action_server : public Base_action {
 
 public:
 
-    enum PouringPhase {
+   enum PouringPhase {
         PHASEHOME=1,
         PHASEPOUR=1,
         PHASEBACK=2
@@ -33,7 +33,9 @@ public:
 
     void initialize();
 
-    bool executeCB(asrv::alib_server& as_, asrv::alib_feedback& feedback_,const lasa_action_planners::PLAN2CTRLGoalConstPtr& goal);
+    bool executeCB(asrv::alib_server& as_, asrv::alib_feedback& feedback_,
+                   const lasa_action_planners::PLAN2CTRLGoalConstPtr& goal,
+                   PouringPhase phase);
 
 private:
 

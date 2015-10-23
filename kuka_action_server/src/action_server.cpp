@@ -42,13 +42,14 @@ void Action_server::executeCB(const cptrGoal& goal){
     std::cout<< "EXECUTE REQUESTED ACTION" << std::endl;
 
     std::string action_type = goal->action_type;
+    std::string action_name = goal->action_name;
     std::cout<< "action_type: " << action_type << std::endl;
-    std::cout<< "action_name: " << goal->action_name << std::endl;
+    std::cout<< "action_name: " << action_name << std::endl;
 
-    actions_it              = actions.find(action_type);
+    actions_it              = actions.find(action_name);
 
     if(actions_it == actions.end()){
-        ROS_ERROR_STREAM("Unidentified action name "<< action_type.c_str());
+        ROS_ERROR_STREAM("Unidentified action name "<< action_name.c_str());
         result_.success = false;
         as_.setAborted(result_);
     }else{

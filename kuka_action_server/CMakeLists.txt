@@ -32,6 +32,7 @@ set(H_FILES  	${INCLUDE_DIR}/kuka_action_server/base_action.h
 set(SRC_FILES
                 ${SRC_DIR}/base_action.cpp
                 ${SRC_DIR}/action_server.cpp
+                ${SRC_DIR}/default_topics.cpp
 )
 
 add_library(${PROJECT_NAME} SHARED ${H_FILES} ${SRC_FILES})

@@ -9,8 +9,6 @@
 int main(int argc,char** argv){
 
 
-
-
     ros::init(argc, argv, "control_cmd_interface");
     ros::NodeHandle nh("control_cmd_interface");
 
@@ -48,12 +46,6 @@ int main(int argc,char** argv){
 
 
     ros::spin();
-
-
-
-
-
-
 
     return 0;
 }

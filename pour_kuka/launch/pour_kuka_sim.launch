@@ -36,6 +36,6 @@
 	<!--include file="$(find peg_filter)/launch/particle_filter/plug_particle_filter.launch"/-->
 
 	<!-- rviz -->
-	<node name="rviz" pkg="rviz" type="rviz"  args="-d $(find peg_hole_kuka)/launch/rviz/peg_hole_kuka.rviz"  required="true" />
+	<node name="rviz" pkg="rviz" type="rviz"  args="-d $(find pour_kuka)/launch/rviz/pour_kuka.rviz"  required="true" />
 
 </launch>
