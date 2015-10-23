@@ -1,0 +1,7 @@
+set(_CATKIN_CURRENT_PACKAGE "pour_kuka")
+set(pour_kuka_MAINTAINER "guillaume <guillaume@todo.todo>")
+set(pour_kuka_DEPRECATED "")
+set(pour_kuka_VERSION "0.0.0")
+set(pour_kuka_BUILD_DEPENDS "roscpp" "sensor_msgs" "mathlib" "robotlib" "std_tools" "geometry_msgs" "tf" "iai_control_msgs" "lasa_action_planners" "cds_execution" "robohow_common_msgs" "kuka_action_server" "kuka_action_client" "control_cmd_interface")
+set(pour_kuka_RUN_DEPENDS "kuka_action_server" "kuka_action_client" "control_cmd_interface" "sensor_msgs" "roscpp" "mathlib" "robotlib" "std_tools" "geometry_msgs" "tf" "iai_control_msgs" "lasa_action_planners" "cds_execution" "robohow_common_msgs")
+set(pour_kuka_BUILDTOOL_DEPENDS "catkin")

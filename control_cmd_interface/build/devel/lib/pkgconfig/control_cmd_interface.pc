@@ -1,0 +1,8 @@
+prefix=/home/guillaume/roscode/catkin_ws/src/kuka_control/control_cmd_interface/build/devel
+
+Name: control_cmd_interface
+Description: Description of control_cmd_interface
+Version: 0.0.0
+Cflags: -I/home/guillaume/roscode/catkin_ws/src/kuka_control/control_cmd_interface/build/devel/include -I/home/guillaume/roscode/catkin_ws/src/kuka_control/control_cmd_interface/include
+Libs: -L/home/guillaume/roscode/catkin_ws/src/kuka_control/control_cmd_interface/build/devel/lib -lcontrol_cmd_interface
+Requires: roscpp message_runtime
