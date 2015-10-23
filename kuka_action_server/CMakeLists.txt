@@ -21,7 +21,9 @@ include_directories(include ${catkin_INCLUDE_DIRS})
 set(INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/include)
 set(SRC_DIR ${CMAKE_CURRENT_SOURCE_DIR}/src)
 
-include_directories(${INCLUDE_DIR} ${catkin_INCLUDE_DIRS})
+
+find_package(Eigen)
+include_directories(${INCLUDE_DIR} ${catkin_INCLUDE_DIRS} ${Eigen_INCLUDE_DIRS})
 
 
 set(H_FILES  	${INCLUDE_DIR}/kuka_action_server/base_ee_action.h
