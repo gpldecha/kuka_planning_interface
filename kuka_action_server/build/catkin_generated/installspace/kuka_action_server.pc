@@ -1,8 +1,0 @@
-prefix=/usr/local
-
-Name: kuka_action_server
-Description: Description of kuka_action_server
-Version: 0.0.0
-Cflags: -I/usr/local/include
-Libs: -L/usr/local/lib -lkuka_action_server
-Requires: std_tools tf

@@ -1,8 +1,0 @@
-prefix=/usr/local
-
-Name: pour_kuka
-Description: Description of pour_kuka
-Version: 0.0.0
-Cflags: -I/usr/local/include
-Libs: -L/usr/local/lib 
-Requires: std_tools tf

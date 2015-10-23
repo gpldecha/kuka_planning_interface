@@ -1,7 +1,0 @@
-set(_CATKIN_CURRENT_PACKAGE "control_cmd_interface")
-set(control_cmd_interface_MAINTAINER "guillaume <guillaume@todo.todo>")
-set(control_cmd_interface_DEPRECATED "")
-set(control_cmd_interface_VERSION "0.0.0")
-set(control_cmd_interface_BUILD_DEPENDS "roscpp" "std_msgs" "message_runtime" "message_generation")
-set(control_cmd_interface_RUN_DEPENDS "roscpp" "std_msgs" "message_runtime")
-set(control_cmd_interface_BUILDTOOL_DEPENDS "catkin")

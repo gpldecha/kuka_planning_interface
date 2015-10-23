@@ -1,8 +1,0 @@
-prefix=/home/guillaume/roscode/catkin_ws/src/kuka_control/pour_kuka/build/devel
-
-Name: pour_kuka
-Description: Description of pour_kuka
-Version: 0.0.0
-Cflags: -I/home/guillaume/roscode/catkin_ws/src/kuka_control/pour_kuka/include
-Libs: -L/home/guillaume/roscode/catkin_ws/src/kuka_control/pour_kuka/build/devel/lib 
-Requires: std_tools tf
