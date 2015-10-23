@@ -2,13 +2,13 @@
 #define POUR_ACTION_H_
 
 
-#include "kuka_action_server/base_action.h"
+#include "kuka_action_server/base_ee_action.h"
 #include "kuka_action_server/default_topics.h"
 #include "kuka_action_server/action_server.h"
 
 #include "CDSExecution.h"
 
-class Pour_action_server : public Base_action {
+class Pour_action_server : public Base_ee_action {
 
 public:
 
@@ -36,7 +36,6 @@ public:
     bool executeCB(asrv::alib_server& as_, asrv::alib_feedback& feedback_,
                    const lasa_action_planners::PLAN2CTRLGoalConstPtr& goal,
                    PouringPhase phase);
-
 private:
 
     bool learned_model_execution(PouringPhase                phase,
@@ -55,6 +54,9 @@ private:
     bool            initial_config;
     bool            simulation;
     int             tf_count;
+
+    tf::Pose        curr_ee_pose;   /// end-effector current position
+    tf::Pose        des_ee_pose;    /// desired end-effector position
 
     CDSController::DynamicsType masterType;
     CDSController::DynamicsType slaveType;

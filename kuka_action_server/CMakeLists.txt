@@ -24,13 +24,14 @@ set(SRC_DIR ${CMAKE_CURRENT_SOURCE_DIR}/src)
 include_directories(${INCLUDE_DIR} ${catkin_INCLUDE_DIRS})
 
 
-set(H_FILES  	${INCLUDE_DIR}/kuka_action_server/base_action.h
+set(H_FILES  	${INCLUDE_DIR}/kuka_action_server/base_ee_action.h
+                ${INCLUDE_DIR}/kuka_action_server/base_j_action.h
                 ${INCLUDE_DIR}/kuka_action_server/default_topics.h
                 ${INCLUDE_DIR}/kuka_action_server/action_server.h
 )
 
-set(SRC_FILES
-                ${SRC_DIR}/base_action.cpp
+set(SRC_FILES   ${SRC_DIR}/base_ee_action.cpp
+                ${SRC_DIR}/base_j_action.cpp
                 ${SRC_DIR}/action_server.cpp
                 ${SRC_DIR}/default_topics.cpp
 )

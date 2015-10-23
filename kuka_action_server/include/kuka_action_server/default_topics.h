@@ -11,7 +11,12 @@ public:
     static const std::string EE_CMD_POSE_TOPIC;
     static const std::string EE_CMD_FT_TOPIC ;
     static const std::string BASE_LINK;
+
+    static const std::string J_STATE_POSE_TOPIC;
+    static const std::string J_CMD_POSE_TOPIC;
+
 };
+
 
 
 #endif

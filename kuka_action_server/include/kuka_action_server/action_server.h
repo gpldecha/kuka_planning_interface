@@ -4,7 +4,7 @@
 /**
     Action Server
 
-    This class cacts as the main register for indiviudal implemenations of actions
+    This class acts as the main register for indiviudal implemenations of actions
 
 
 

@@ -1,5 +1,14 @@
-#ifndef BASE_ACTION_H_
-#define BASE_ACTION_H_
+#ifndef BASE_EE_ACTION_H_
+#define BASE_EE_ACTION_H_
+
+/**
+    Base End Effector Action
+
+    Provides a default implementation of ros communicating protocols for the KUKA robot.
+    A publisher and subscriber are implemented to read the robot's end effector state
+    and command the end effectors state.
+
+  **/
 
 #include <ros/ros.h>
 //-- TF Stuff --//
@@ -16,11 +25,11 @@
 #include <Eigen/Core>
 #include <Eigen/Geometry>
 
-class Base_action{
+class Base_ee_action{
 
 public:
 
-    Base_action(ros::NodeHandle&   nh,
+    Base_ee_action(ros::NodeHandle&   nh,
                 const std::string& ee_state_pos_topic,
                 const std::string& ee_cmd_pos_topic,
                 const std::string& ee_cmd_ft_topic);
@@ -41,8 +50,8 @@ public:
     geometry_msgs::WrenchStamped        msg_ft;
 
 
-    tf::Pose                            ee_pose, curr_ee_pose, des_ee_pose;
-    Eigen::VectorXd                     ee_ft;
+    tf::Pose                            ee_pose;        /// end-effector position
+    Eigen::VectorXd                     ee_ft;          /// end-effector force torque
 
     volatile bool                       isOkay, isFTOkay;
 
