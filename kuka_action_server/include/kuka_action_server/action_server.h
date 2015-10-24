@@ -48,7 +48,6 @@ typedef lasa_action_planners::PLAN2CTRLGoalConstPtr                             
  * to topics such to send and receive state information from the robot or simulation.
  *
  */
-typedef std::function<bool(alib_server& as_,alib_feedback& feedback,const cptrGoal& goal)>  fexecuteCB;
 
 class Base_action_server{
 
@@ -74,8 +73,6 @@ public:
 
     Action_server(ros::NodeHandle& nh,std::string name);
 
-    void push_back(fexecuteCB& function,std::string action_name);
-
     void push_back(Base_action_server* base_action_server,std::string action_name);
 
 private:
@@ -94,13 +91,9 @@ private:
     alib_result                         result_;
     ros::Subscriber                     as_sub;
 
-    std::map<std::string,fexecuteCB*>           actions;
-    std::map<std::string,fexecuteCB*>::iterator actions_it;
-
-
     Base_action_server*                                 base_action_server;
-    std::map<std::string,Base_action_server*>           actions2;
-    std::map<std::string,Base_action_server*>::iterator actions2_it;
+    std::map<std::string,Base_action_server*>           actions;
+    std::map<std::string,Base_action_server*>::iterator actions_it;
 
     volatile bool                       *ptr_isOkay;
 
