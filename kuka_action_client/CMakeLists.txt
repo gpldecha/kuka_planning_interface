@@ -35,8 +35,5 @@ set(SRC_FILES   ${SRC_DIR}/kuka_action_client.cpp
 add_library(${PROJECT_NAME} ${H_FILES} ${SRC_FILES})
 target_link_libraries(${PROJECT_NAME} ${catkin_LIBRARIES})
 
-add_executable(${PROJECT_NAME}_node ${SRC_DIR}/kuka_action_client_node.cpp)
-target_link_libraries(${PROJECT_NAME}_node ${PROJECT_NAME} ${catkin_LIBRARIES})
-
 
 

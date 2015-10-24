@@ -35,9 +35,9 @@ target_link_libraries(pour_server_node ${catkin_LIBRARIES})
 
 # --- Create Action Client Node Pour action
 
-add_executable(pour_client_node ${INCLUDE_DIR}/pour_kuka/pour_client.h
-                                ${SRC_DIR}/pour_client.cpp
-                                ${SRC_DIR}/pour_client_node.cpp)
+add_executable(pour_client_node ${INCLUDE_DIR}/pour_kuka/pour_action_client.h
+                                ${SRC_DIR}/pour_action_client.cpp
+                                ${SRC_DIR}/pour_action_client_node.cpp)
 target_link_libraries(pour_client_node ${catkin_LIBRARIES})
 
 

@@ -1,6 +1,12 @@
 #ifndef POUR_ACTION_H_
 #define POUR_ACTION_H_
 
+/**
+    Example implementation of a pouring task for the KUKA robot. Three types of behaviour
+    are implemented; 1) home, 2) back and 3) pour. Which are self explanotary.
+
+  **/
+
 #include "kuka_action_server/action_server.h"
 #include "kuka_action_server/base_ee_action.h"
 #include "kuka_action_server/default_topics.h"

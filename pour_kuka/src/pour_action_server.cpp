@@ -17,8 +17,6 @@ Pour_action_server::Pour_action_server(ros::NodeHandle&   nh,
     k                       = 1;
     masterType              = CDSController::MODEL_DYNAMICS;
     slaveType               = CDSController::UTHETA;
-
-
 }
 
 void Pour_action_server::initialize() {
@@ -45,15 +43,7 @@ void Pour_action_server::initialize() {
 
     ROS_INFO_STREAM("Selected Action Mode: " << ad);
 }
-/*
-bool Pour_action_server::executeCB(asrv::alib_server&                                 as_,
-                                   asrv::alib_feedback&                               feedback_,
-                                   const lasa_action_planners::PLAN2CTRLGoalConstPtr& goal,
-                                   PouringPhase phase)
-{
-    return learned_model_execution(phase,as_,feedback_,goal);
-}
-*/
+
 bool Pour_action_server::execute_CB(asrv::alib_server& as_,asrv::alib_feedback& feedback,const asrv::cptrGoal& goal){
 
     std::string action_name = goal->action_name;
@@ -62,8 +52,9 @@ bool Pour_action_server::execute_CB(asrv::alib_server& as_,asrv::alib_feedback& 
         return learned_model_execution(PHASEHOME,as_,feedback,goal);
     }else if (action_name == "back"){
         return learned_model_execution(PHASEBACK,as_,feedback,goal);
-    }else if(action_name == " pour"){
-        return learned_model_execution(PHASEBACK,as_,feedback,goal);
+    }else if(action_name == "pour"){
+    //    ROS_INFO("pour_action_server: pour ");
+        return learned_model_execution(PHASEPOUR,as_,feedback,goal);
     }else{
         return false;
     }
@@ -71,9 +62,9 @@ bool Pour_action_server::execute_CB(asrv::alib_server& as_,asrv::alib_feedback& 
 }
 
 bool Pour_action_server::learned_model_execution(PouringPhase                phase,
-                                          asrv::alib_server&          as_,
-                                          asrv::alib_feedback&        feedback_,
-                                          const asrv::cptrGoal&       goal)
+                                                 asrv::alib_server&          as_,
+                                                 asrv::alib_feedback&        feedback_,
+                                                 const asrv::cptrGoal&       goal)
 {
 
  //   ROS_INFO_STREAM(" Model Path "<<base_path);
@@ -211,26 +202,37 @@ bool Pour_action_server::learned_model_execution(PouringPhase                pha
 
         // ACTION SERVER FUNCTIONALITY
 
-
-
-        if (as_.isPreemptRequested())
-        {
-            std::cout<< "HAS BEEN PREEMPTED" << std::endl;
-            // set the action state to preempted
-            as_.setPreempted();
-            break;
-        }
-
         feedback_.progress = prog_curr;
         as_.publishFeedback(feedback_);
+        if (as_.isPreemptRequested() || !ros::ok())
+        {
+            ROS_INFO("Preempted");
+            // set the action state to preempted
+            as_.setPreempted();
+            bBaseRun = false;
+            break;
+        }
 
         if(pos_err < reachingThreshold && (ori_err < orientationThreshold || std::isnan(ori_err))) {
             break;
         }
         loop_rate.sleep();
     }
+
     delete cdsRun;
-    return ros::ok();
+
+    if(!bBaseRun){
+         ROS_INFO("!baseRun");
+       //  as_.
+       //  as_.shutdown();
+       //  as_.setPreempted();
+         ROS_INFO("after as_.setPreempted");
+
+         return false;
+    }else{
+         return true;
+    }
+
 }
 
 

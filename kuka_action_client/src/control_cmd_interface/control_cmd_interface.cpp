@@ -38,21 +38,21 @@ bool Control_cmd_interface::service_callback(control_cmd_interface::String_cmd::
 
    if(!kuka_action_client.b_action_running){
     std::cout<< " start action:          "   << action_name << std::endl;
-        worker_thread = boost::thread(&Control_cmd_interface::workThread2,this,action_name);
+        worker_thread = boost::thread(&Control_cmd_interface::workThread,this,action_name);
     }else{
+        kuka_action_client.ac_.cancelAllGoals();
         server_msg.data = "cancel";
         action_server_pub.publish(server_msg);
         ros::spinOnce();
         kuka_action_client.b_action_running = false;
+        worker_thread.join();
     }
-
     res.str = "";
-
     return true;
 }
 
 
-void Control_cmd_interface::workThread2(std::string action_name){
+void Control_cmd_interface::workThread(std::string action_name){
     kuka_action_client.call_action(action_name);
 }
 

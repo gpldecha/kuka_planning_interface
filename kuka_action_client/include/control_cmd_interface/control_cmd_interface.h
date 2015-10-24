@@ -29,17 +29,13 @@ public:
 
     void init_nl_subscriber(std::string topic_name);
 
-   // void register_callback(action_callback_func& function);
-
 private:
 
     void nl_command_callback(const std_msgs::String::ConstPtr &msg);
 
     bool service_callback(control_cmd_interface::String_cmd::Request& req,control_cmd_interface::String_cmd::Response &res);
 
-    void workThread(int num_iter);
-
-    void workThread2(std::string action_name);
+    void workThread(std::string action_name);
 
 private:
 

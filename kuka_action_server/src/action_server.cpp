@@ -58,7 +58,9 @@ void Action_server::executeCB(const cptrGoal& goal){
 
         base_action_server = actions_it->second;
         base_action_server->bBaseRun = true;
+        ROS_INFO("before base_action_server");
         bool success                 = base_action_server->execute_CB(as_,feedback_,goal);
+        ROS_INFO("after base_action_server");
 
 
         result_.success = success;
@@ -68,7 +70,7 @@ void Action_server::executeCB(const cptrGoal& goal){
             as_.setSucceeded(result_);
         } else {
             ROS_INFO("%s: Failed", action_name_.c_str());
-            as_.setAborted(result_);
+          //  as_.setAborted(result_);
         }
     }
 }
@@ -80,13 +82,17 @@ void Action_server::subscriber_cb(const std_msgs::String::ConstPtr& msg){
     ROS_INFO("ACTION SERVER SUBSCRIBER cmd [%s]",cmd.c_str());
 
     if(cmd == "cancel"){
+        result_.success = false;
+        as_.setPreempted(result_);
         if (base_action_server != NULL){
             base_action_server->bBaseRun = false;
             std::cout<< "bRun is set to false" << std::endl;
         }else{
             std::cout<< "Action_server::subscriber_cb is NULL" << std::endl;
         }
-        as_.setAborted(result_);
+
+        //result_.success = false;
+        //as_.setAborted(result_);
         ROS_INFO("cancel current action");
     }
 
