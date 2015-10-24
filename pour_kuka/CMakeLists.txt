@@ -4,6 +4,8 @@ project(pour_kuka)
 find_package(catkin REQUIRED std_tools tf roscpp mathlib robotlib cds_execution
 tf cmake_modules kuka_action_server kuka_action_client)
 
+
+
 set(CMAKE_CXX_FLAGS "-O2 -O3 -std=c++11 -mtune=native -fPIC -Wall")
 
 
@@ -20,8 +22,9 @@ catkin_package(
 
 set(INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/include)
 set(SRC_DIR ${CMAKE_CURRENT_SOURCE_DIR}/src)
-
 include_directories(include ${catkin_INCLUDE_DIRS} ${INCLUDE_DIR} ${catkin_INCLUDE_DIRS})
+
+
 
 # --- Create Action Server Node Pour action
 
