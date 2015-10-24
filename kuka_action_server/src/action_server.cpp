@@ -7,10 +7,18 @@ Action_server::Action_server(ros::NodeHandle& nh,std::string name):
     action_name_(name)
 {
     as_.start();
+
+    as_sub             = nh.subscribe("/kuka_server/cmd", 10, &Action_server::subscriber_cb,this);
+    base_action_server = NULL;
+
 }
 
 void Action_server::push_back(fexecuteCB& function,std::string action_name){
     actions[action_name] = &function;
+}
+
+void Action_server::push_back(Base_action_server* base_action_server,std::string action_name){
+    actions2[action_name] = base_action_server;
 }
 
 void Action_server::executeCB(const cptrGoal& goal){
@@ -32,6 +40,7 @@ void Action_server::executeCB(const cptrGoal& goal){
         return;
     }
 
+
     // initialize action progress as null
     feedback_.progress = 0;
 
@@ -46,16 +55,21 @@ void Action_server::executeCB(const cptrGoal& goal){
     std::cout<< "action_type: " << action_type << std::endl;
     std::cout<< "action_name: " << action_name << std::endl;
 
-    actions_it              = actions.find(action_name);
+   // actions_it              = actions.find(action_name);
+    actions2_it              = actions2.find(action_name);
 
-    if(actions_it == actions.end()){
+
+    if(actions2_it == actions2.end()){
         ROS_ERROR_STREAM("Unidentified action name "<< action_name.c_str());
         result_.success = false;
         as_.setAborted(result_);
     }else{
 
-        fexecuteCB& action_function = *(actions_it->second);
-        bool success    = action_function(as_,feedback_,goal);
+        base_action_server = actions2_it->second;
+        base_action_server->bBaseRun = true;
+        bool success                 = base_action_server->execute_CB(as_,feedback_,goal);
+
+
         result_.success = success;
         if(success)
         {
@@ -68,6 +82,25 @@ void Action_server::executeCB(const cptrGoal& goal){
     }
 }
 
+
+void Action_server::subscriber_cb(const std_msgs::String::ConstPtr& msg){
+
+    std::string cmd = msg->data.c_str();
+    ROS_INFO("ACTION SERVER SUBSCRIBER cmd [%s]",cmd.c_str());
+
+    if(cmd == "cancel"){
+        if (base_action_server != NULL){
+            base_action_server->bBaseRun = false;
+            std::cout<< "bRun is set to false" << std::endl;
+        }else{
+            std::cout<< "Action_server::subscriber_cb is NULL" << std::endl;
+        }
+        as_.setAborted(result_);
+        ROS_INFO("cancel current action");
+    }
+
+
+}
 
 
 

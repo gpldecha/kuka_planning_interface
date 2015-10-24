@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 2.8.3)
 project(kuka_action_client)
 
 
-find_package(catkin REQUIRED tf roscpp control_cmd_interface)
+find_package(catkin REQUIRED tf roscpp)
 
 set(CMAKE_CXX_FLAGS "-O2 -O3 -std=c++11 -mtune=native -fPIC -Wall")
 
@@ -25,9 +25,12 @@ set(SRC_DIR ${CMAKE_CURRENT_SOURCE_DIR}/src)
 
 include_directories(include ${catkin_INCLUDE_DIRS} ${INCLUDE_DIR} )
 
-set(H_FILES     ${INCLUDE_DIR}/kuka_action_client/kuka_action_client.h)
+set(H_FILES     ${INCLUDE_DIR}/kuka_action_client/kuka_action_client.h
+                ${INCLUDE_DIR}/control_cmd_interface/control_cmd_interface.h
+                ${INCLUDE_DIR}/ros_param_parser/ros_param_parser.h)
 
-set(SRC_FILES   ${SRC_DIR}/kuka_action_client.cpp)
+set(SRC_FILES   ${SRC_DIR}/kuka_action_client.cpp
+                ${SRC_DIR}/control_cmd_interface/control_cmd_interface.cpp)
 
 add_library(${PROJECT_NAME} ${H_FILES} ${SRC_FILES})
 target_link_libraries(${PROJECT_NAME} ${catkin_LIBRARIES})

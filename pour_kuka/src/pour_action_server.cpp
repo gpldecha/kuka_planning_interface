@@ -45,25 +45,29 @@ void Pour_action_server::initialize() {
 
     ROS_INFO_STREAM("Selected Action Mode: " << ad);
 }
-
+/*
 bool Pour_action_server::executeCB(asrv::alib_server&                                 as_,
                                    asrv::alib_feedback&                               feedback_,
                                    const lasa_action_planners::PLAN2CTRLGoalConstPtr& goal,
                                    PouringPhase phase)
 {
+    return learned_model_execution(phase,as_,feedback_,goal);
+}
+*/
+bool Pour_action_server::execute_CB(asrv::alib_server& as_,asrv::alib_feedback& feedback,const asrv::cptrGoal& goal){
 
+    std::string action_name = goal->action_name;
 
-   /* if(goal->action_name == "home"){
-        return learned_model_execution(PHASEHOME,as_,feedback_,goal);
-    }else if(goal->action_name == "back"){
-        return learned_model_execution(PHASEBACK,as_,feedback_,goal);
-    }else if(goal->action_name == "pour"){
-        return learned_model_execution(PHASEPOUR,as_,feedback_,goal);
+    if(action_name == "home"){
+        return learned_model_execution(PHASEHOME,as_,feedback,goal);
+    }else if (action_name == "back"){
+        return learned_model_execution(PHASEBACK,as_,feedback,goal);
+    }else if(action_name == " pour"){
+        return learned_model_execution(PHASEBACK,as_,feedback,goal);
     }else{
         return false;
-    }*/
+    }
 
-    return learned_model_execution(phase,as_,feedback_,goal);
 }
 
 bool Pour_action_server::learned_model_execution(PouringPhase                phase,
@@ -72,11 +76,11 @@ bool Pour_action_server::learned_model_execution(PouringPhase                pha
                                           const asrv::cptrGoal&       goal)
 {
 
-    ROS_INFO_STREAM(" Model Path "<<base_path);
-    ROS_INFO_STREAM("Learned model execution with phase "<<phase);
-    ROS_INFO_STREAM(" Reaching threshold "<<reachingThreshold);
-    ROS_INFO_STREAM(" Orientation threshold "<<orientationThreshold);
-    ROS_INFO_STREAM(" Model DT "<<model_dt);
+ //   ROS_INFO_STREAM(" Model Path "<<base_path);
+ //   ROS_INFO_STREAM("Learned model execution with phase "<<phase);
+//    ROS_INFO_STREAM(" Reaching threshold "<<reachingThreshold);
+ //   ROS_INFO_STREAM(" Orientation threshold "<<orientationThreshold);
+ //   ROS_INFO_STREAM(" Model DT "<<model_dt);
 
     tf::Transform trans_obj, trans_att;
     /*switch (action_mode) {
@@ -104,8 +108,8 @@ bool Pour_action_server::learned_model_execution(PouringPhase                pha
     // convert attractor information to world frame
     trans_final_target.mult(trans_obj, trans_att);
 
-    ROS_INFO_STREAM("Final target origin "<<trans_final_target.getOrigin().getX()<<","<<trans_final_target.getOrigin().getY()<<","<<trans_final_target.getOrigin().getZ());
-    ROS_INFO_STREAM("Final target orient "<<trans_final_target.getRotation().getX()<<","<<trans_final_target.getRotation().getY()<<","<<trans_final_target.getRotation().getZ()<<","<<trans_final_target.getRotation().getW());
+ //   ROS_INFO_STREAM("Final target origin "<<trans_final_target.getOrigin().getX()<<","<<trans_final_target.getOrigin().getY()<<","<<trans_final_target.getOrigin().getZ());
+ //   ROS_INFO_STREAM("Final target orient "<<trans_final_target.getRotation().getX()<<","<<trans_final_target.getRotation().getY()<<","<<trans_final_target.getRotation().getZ()<<","<<trans_final_target.getRotation().getW());
 
     if (initial_config == true)
         curr_ee_pose = ee_pose;
@@ -131,9 +135,15 @@ bool Pour_action_server::learned_model_execution(PouringPhase                pha
     pos_err = 0; ori_err = 0; prog_curr = 0;
 
     ROS_INFO("Execution started");
+    if (bBaseRun){
+        std::cout<< "bRun: TRUE " << std::endl;
+    }else{
+        std::cout<< "bRun: FALSE " << std::endl;
+    }
+
 
     static tf::TransformBroadcaster br;
-    while(ros::ok()) {
+    while(ros::ok() && bBaseRun) {
         if (initial_config == true)
             curr_ee_pose = ee_pose;
         else
@@ -165,14 +175,14 @@ bool Pour_action_server::learned_model_execution(PouringPhase                pha
         pos_err = (trans_final_target.getOrigin() - curr_ee_pose.getOrigin()).length();
         //Real Orientation Error qdiff = acos(dot(q1_norm,q2_norm))*180/pi
         ori_err = acos(abs(trans_final_target.getRotation().dot(curr_ee_pose.getRotation())));
-        ROS_INFO_STREAM_THROTTLE(0.5,"Position Threshold : " << reachingThreshold << " ... Current Error: "<<pos_err);
-        ROS_INFO_STREAM_THROTTLE(0.5,"Orientation Threshold : " << orientationThreshold << " ... Current Error: "<<ori_err);
+      //  ROS_INFO_STREAM_THROTTLE(0.5,"Position Threshold : " << reachingThreshold << " ... Current Error: "<<pos_err);
+      //  ROS_INFO_STREAM_THROTTLE(0.5,"Orientation Threshold : " << orientationThreshold << " ... Current Error: "<<ori_err);
 
         double att_pos_err = (trans_final_target.getOrigin() - des_ee_pose.getOrigin()).length();
         double att_ori_err = acos(abs(trans_final_target.getRotation().dot(des_ee_pose.getRotation())));
 
-        ROS_INFO_STREAM_THROTTLE(0.5,"Des-Att Position Error: " << att_pos_err);
-        ROS_INFO_STREAM_THROTTLE(0.5,"Des-Att Orientation Error: " << att_ori_err);
+      //  ROS_INFO_STREAM_THROTTLE(0.5,"Des-Att Position Error: " << att_pos_err);
+      //  ROS_INFO_STREAM_THROTTLE(0.5,"Des-Att Orientation Error: " << att_ori_err);
 
         // Compute Next Desired EE Pose
            cdsRun->setCurrentEEPose(toMatrix4(mNextRobotEEPose));
@@ -194,10 +204,22 @@ bool Pour_action_server::learned_model_execution(PouringPhase                pha
 
         // Broadcast/view Desired EE Pose
         br.sendTransform(tf::StampedTransform(des_ee_pose, ros::Time::now(), world_frame, "/des_ee_mp"));
-        ROS_INFO_STREAM_THROTTLE(1, "Sent Position: "<<des_ee_pose.getOrigin().x()<<","<<des_ee_pose.getOrigin().y()<<","<<des_ee_pose.getOrigin().z());
+       // ROS_INFO_STREAM_THROTTLE(1, "Sent Position: "<<des_ee_pose.getOrigin().x()<<","<<des_ee_pose.getOrigin().y()<<","<<des_ee_pose.getOrigin().z());
         tf::Quaternion q = des_ee_pose.getRotation();
         q  = q.normalized();
-        ROS_INFO_STREAM_THROTTLE(1, "Sent Orientation: "<<q.x()<<","<<q.y()<<","<<q.z()<<","<<q.w());
+       // ROS_INFO_STREAM_THROTTLE(1, "Sent Orientation: "<<q.x()<<","<<q.y()<<","<<q.z()<<","<<q.w());
+
+        // ACTION SERVER FUNCTIONALITY
+
+
+
+        if (as_.isPreemptRequested())
+        {
+            std::cout<< "HAS BEEN PREEMPTED" << std::endl;
+            // set the action state to preempted
+            as_.setPreempted();
+            break;
+        }
 
         feedback_.progress = prog_curr;
         as_.publishFeedback(feedback_);

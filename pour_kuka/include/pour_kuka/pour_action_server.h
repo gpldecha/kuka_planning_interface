@@ -1,15 +1,15 @@
 #ifndef POUR_ACTION_H_
 #define POUR_ACTION_H_
 
-
+#include "kuka_action_server/action_server.h"
 #include "kuka_action_server/base_ee_action.h"
 #include "kuka_action_server/default_topics.h"
 #include "kuka_action_server/action_server.h"
 
 #include "CDSExecution.h"
 
-class Pour_action_server : public Base_ee_action {
-
+class Pour_action_server : public Base_ee_action, public asrv::Base_action_server
+{
 public:
 
    enum PouringPhase {
@@ -33,9 +33,8 @@ public:
 
     void initialize();
 
-    bool executeCB(asrv::alib_server& as_, asrv::alib_feedback& feedback_,
-                   const lasa_action_planners::PLAN2CTRLGoalConstPtr& goal,
-                   PouringPhase phase);
+    virtual bool execute_CB(asrv::alib_server& as_,asrv::alib_feedback& feedback,const asrv::cptrGoal& goal);
+
 private:
 
     bool learned_model_execution(PouringPhase                phase,
@@ -60,7 +59,6 @@ private:
 
     CDSController::DynamicsType masterType;
     CDSController::DynamicsType slaveType;
-
 };
 
 #endif

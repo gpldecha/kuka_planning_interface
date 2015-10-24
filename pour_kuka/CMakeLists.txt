@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 2.8.3)
 project(pour_kuka)
 
 find_package(catkin REQUIRED std_tools tf roscpp mathlib robotlib cds_execution
-tf cmake_modules kuka_action_server kuka_action_client control_cmd_interface)
+tf cmake_modules kuka_action_server kuka_action_client)
 
 set(CMAKE_CXX_FLAGS "-O2 -O3 -std=c++11 -mtune=native -fPIC -Wall")
 

@@ -32,19 +32,12 @@ int main(int argc,char** argv){
     // ------------- Initialise Action Client & Set Goals -------------
 
     Pour_client pour_client(action_server_name);
-    ROS_INFO("after Pour_client");
-
-    ci::action_callback_func action_callback = std::bind(&Pour_client::call_action,&pour_client,std::placeholders::_1);
 
     // --------------  Control cmd interface ----------------
-    ci::Control_cmd_interface control_cmd_interface(nh,serivce_name);
+    ci::Control_cmd_interface control_cmd_interface(nh,pour_client,serivce_name);
     ROS_INFO("after control_cmd_interface");
 
-    control_cmd_interface.register_callback(action_callback);
-
     control_cmd_interface.init_nl_subscriber(speech_topic);
-
-
     ros::spin();
 
     return 0;

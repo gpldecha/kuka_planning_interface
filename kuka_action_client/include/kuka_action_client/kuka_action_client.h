@@ -11,7 +11,8 @@
 namespace kac{
 
 typedef actionlib::SimpleActionClient<lasa_action_planners::PLAN2CTRLAction>    alib_client;
-typedef lasa_action_planners::PLAN2CTRLGoal                                      Goal;
+typedef lasa_action_planners::PLAN2CTRLGoal                                     Goal;
+typedef actionlib::SimpleClientGoalState::StateEnum                             action_states;
 
 class Kuka_action_client{
 
@@ -26,10 +27,12 @@ public:
     bool call_action(const std::string& name);
 
 
-protected:
+public:
 
     alib_client                ac_;
     std::map<std::string,Goal> goals;
+    volatile bool              b_action_running;
+    std::string                current_action_name;
 
 
 

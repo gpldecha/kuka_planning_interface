@@ -59,10 +59,6 @@
   <build_depend> kuka_action_client </build_depend>
   <run_depend>   kuka_action_client </run_depend>
 
-  <build_depend> control_cmd_interface </build_depend>
-  <run_depend>   control_cmd_interface </run_depend>
-
-
 
   <run_depend>sensor_msgs</run_depend>
   <run_depend>roscpp</run_depend>

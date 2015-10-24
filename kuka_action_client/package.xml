@@ -47,10 +47,6 @@
 <build_depend> tf </build_depend>
 <run_depend>  tf </run_depend>
 
-<build_depend> control_cmd_interface </build_depend>
-<run_depend>  control_cmd_interface </run_depend>
-
-
   <build_depend>lasa_action_planners</build_depend>
   <run_depend>lasa_action_planners</run_depend>
 
