@@ -3,7 +3,7 @@
 
 #include <ros/ros.h>
 
-#include "control_cmd_interface/String_cmd.h"
+#include "kuka_action_client/String_cmd.h"
 #include "kuka_action_client/kuka_action_client.h"
 
 #include <vector>
@@ -33,7 +33,7 @@ private:
 
     void nl_command_callback(const std_msgs::String::ConstPtr &msg);
 
-    bool service_callback(control_cmd_interface::String_cmd::Request& req,control_cmd_interface::String_cmd::Response &res);
+    bool service_callback(kuka_action_client::String_cmd::Request& req,kuka_action_client::String_cmd::Response &res);
 
     void workThread(std::string action_name);
 

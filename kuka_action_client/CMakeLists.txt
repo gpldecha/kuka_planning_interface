@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 2.8.3)
 project(kuka_action_client)
 
 
-find_package(catkin REQUIRED tf roscpp std_msgs message_generation)
+find_package(catkin REQUIRED tf roscpp std_msgs message_runtime message_generation)
 
 set(CMAKE_CXX_FLAGS "-O2 -O3 -std=c++11 -mtune=native -fPIC -Wall")
 
@@ -14,10 +14,8 @@ set(CMAKE_CXX_FLAGS "-O2 -O3 -std=c++11 -mtune=native -fPIC -Wall")
 ## CATKIN_DEPENDS: catkin_packages dependent projects also need
 ## DEPENDS: system dependencies of this project that dependent projects also need
 
-
-
 add_service_files(FILES
-   String_cmd.srv
+    String_cmd.srv
 )
 
 generate_messages(DEPENDENCIES std_msgs)
@@ -25,8 +23,8 @@ generate_messages(DEPENDENCIES std_msgs)
 catkin_package(
    INCLUDE_DIRS include
    LIBRARIES ${PROJECT_NAME}
-   CATKIN_DEPENDS roscpp tf
-#  DEPENDS system_lib
+   CATKIN_DEPENDS roscpp tf std_msgs message_runtime
+    DEPENDS system_lib
 )
 
 set(INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/include)

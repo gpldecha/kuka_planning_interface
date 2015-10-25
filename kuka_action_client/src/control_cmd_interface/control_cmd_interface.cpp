@@ -27,9 +27,9 @@ void Control_cmd_interface::nl_command_callback(const std_msgs::String::ConstPtr
 
 }
 
-bool Control_cmd_interface::service_callback(control_cmd_interface::String_cmd::Request& req,control_cmd_interface::String_cmd::Response &res){
+bool Control_cmd_interface::service_callback(kuka_action_client::String_cmd::Request& req,kuka_action_client::String_cmd::Response &res){
 
-    std::string action_name         = req.str;
+    std::string action_name         = req.cmd;
     std::string current_action_name = kuka_action_client.current_action_name;
 
     std::cout<< "=== Service call back === " <<                                 std::endl;
@@ -47,7 +47,7 @@ bool Control_cmd_interface::service_callback(control_cmd_interface::String_cmd::
         kuka_action_client.b_action_running = false;
         worker_thread.join();
     }
-    res.str = "";
+    res.res = "";
     return true;
 }
 
