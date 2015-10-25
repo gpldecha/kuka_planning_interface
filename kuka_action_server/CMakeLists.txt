@@ -30,12 +30,20 @@ set(H_FILES  	${INCLUDE_DIR}/kuka_action_server/base_ee_action.h
                 ${INCLUDE_DIR}/kuka_action_server/base_j_action.h
                 ${INCLUDE_DIR}/kuka_action_server/default_topics.h
                 ${INCLUDE_DIR}/kuka_action_server/action_server.h
+                ${INCLUDE_DIR}/kuka_common_action_server/action_initialiser.h
+                ${INCLUDE_DIR}/kuka_common_action_server/kuka_goto_cart_as.h
+                ${INCLUDE_DIR}/kuka_common_action_server/kuka_goto_joint_as.h
+                ${INCLUDE_DIR}/kuka_common_action_server/kuka_grav_as.h
+
 )
 
 set(SRC_FILES   ${SRC_DIR}/base_ee_action.cpp
                 ${SRC_DIR}/base_j_action.cpp
                 ${SRC_DIR}/action_server.cpp
                 ${SRC_DIR}/default_topics.cpp
+                ${SRC_DIR}/kuka_common_action_server/kuka_goto_cart_as.cpp
+                ${SRC_DIR}/kuka_common_action_server/kuka_goto_joint_as.cpp
+                ${SRC_DIR}/kuka_common_action_server/kuka_grav_as.cpp
 )
 
 add_library(${PROJECT_NAME} SHARED ${H_FILES} ${SRC_FILES})

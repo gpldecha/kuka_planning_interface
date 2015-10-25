@@ -32,7 +32,6 @@ Pour_client::Pour_client(const std::string& name)
     home.rotation.y = -0.227;
     home.rotation.z = -0.625;
 
-
     goal.action_name        = "home";
     goal.attractor_frame    = home;
     goals[goal.action_name] = goal;

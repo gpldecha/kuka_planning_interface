@@ -7,7 +7,7 @@
 
 int main(int argc,char** argv){
 
-    ros::init(argc, argv, "control_cmd_interface");
+    ros::init(argc, argv,"control_cmd_interface");
     ros::NodeHandle nh("control_cmd_interface");
 
     std::string node_name = ros::this_node::getName();

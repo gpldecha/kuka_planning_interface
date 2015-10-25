@@ -19,8 +19,8 @@ public:
     Base_j_action(ros::NodeHandle&   nh,
                   const std::string& j_state_pose_topic,
                   const std::string& j_cmd_pos_topic,
-                  const std::string &j_state_imp_topic,
-                  const std::string &j_imp_cmd_topic
+                  const std::string& j_state_imp_topic,
+                  const std::string& j_imp_cmd_topic
                   );
 
 
