@@ -9,4 +9,7 @@ const std::string topics::BASE_LINK             = "/base_link";
 
 /// Joint default topics
 const std::string topics::J_STATE_POSE_TOPIC    =  "/joint_states";
+const std::string topics::JIMP_STATE_POSE_TOPIC    =  "/joint_imp_states";
+
 const std::string topics::J_CMD_POSE_TOPIC      =  "/KUKA/joint_cmd";
+const std::string topics::JIMP_CMD_POSE_TOPIC      =  "/KUKA/joint_imp_cmd";

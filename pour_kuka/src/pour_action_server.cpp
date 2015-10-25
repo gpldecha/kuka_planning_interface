@@ -12,7 +12,7 @@ Pour_action_server::Pour_action_server(ros::NodeHandle&   nh,
     initial_config          = true;
     tf_count                = 0;
     reachingThreshold       = 0.01;  // [m]
-    orientationThreshold    = 0.02;  // [rad]
+    orientationThreshold    = 0.05;  // [rad]
     model_dt                = 0.001; // [s]
     k                       = 1;
     masterType              = CDSController::MODEL_DYNAMICS;

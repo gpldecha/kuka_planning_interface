@@ -13,7 +13,9 @@ public:
     static const std::string BASE_LINK;
 
     static const std::string J_STATE_POSE_TOPIC;
+    static const std::string JIMP_STATE_POSE_TOPIC;
     static const std::string J_CMD_POSE_TOPIC;
+    static const std::string JIMP_CMD_POSE_TOPIC;
 
 };
 
