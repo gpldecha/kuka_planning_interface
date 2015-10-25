@@ -7,7 +7,7 @@
 
 namespace asrv{
 
-class Kuka_goto_joint_as : public Base_j_action ,public Base_action_server {
+class Kuka_goto_joint_as : public Base_j_action, public Base_action_server {
 
 public:
 

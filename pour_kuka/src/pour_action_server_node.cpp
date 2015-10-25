@@ -1,6 +1,7 @@
 #include "pour_kuka/pour_action_server.h"
 #include <functional>
 #include "ros_param_parser/ros_param_parser.h"
+#include "kuka_common_action_server/kuka_goto_cart_as.h"
 
 
 
@@ -34,9 +35,14 @@ int main(int argc, char** argv) {
      *
      **/
 
+    // Pour action set
     Pour_action_server pour_action_server(nh);
     pour_action_server.initialize();
 
+    // Goto actions
+    asrv::Action_ee_initialiser action_ee_init;
+    action_ee_init.action_name = "goto_home";
+    asrv::Kuka_goto_cart_as kuka_goto_cart_as(nh,action_ee_init);
 
 
     /**  ------------- Initialise Action Server -------------
@@ -62,6 +68,7 @@ int main(int argc, char** argv) {
     action_server.push_back(&pour_action_server,"home");
     action_server.push_back(&pour_action_server,"back");
     action_server.push_back(&pour_action_server,"pour");
+    action_server.push_back(&kuka_goto_cart_as,"goto_home");
 
     ros::spin();
 

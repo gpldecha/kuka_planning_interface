@@ -64,5 +64,12 @@ Pour_client::Pour_client(const std::string& name)
     goal.action_name        = "back";
     goal.attractor_frame    = back_attr;
     goals[goal.action_name] = goal;
+
+    kac::Goal goal2;
+    goal2.action_name        = "goto_home";
+    goal2.attractor_frame    = home;
+    goal2.action_type        = "closed_loop";
+    goals[goal2.action_name] = goal2;
+
 }
 

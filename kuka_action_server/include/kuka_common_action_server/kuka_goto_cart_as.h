@@ -16,7 +16,7 @@
 
 namespace asrv{
 
-class Kuka_goto_cart_as : public Base_ee_action ,public Base_action_server{
+class Kuka_goto_cart_as : public Base_ee_action , public Base_action_server{
 
 public:
 
@@ -26,17 +26,32 @@ public:
 
 private:
 
+    bool goto_cartesian_open_loop(alib_server& as_,alib_feedback& feedback,const cptrGoal& goal);
+
+    bool goto_cartesian_closed_loop(alib_server& as_,alib_feedback& feedback,const cptrGoal& goal);
+
+private:
+
+    // https://en.wikipedia.org/wiki/Generalised_logistic_function
+    inline double gen_logisitic(double max_speed,double distance_to_goal){
+        return max_speed / std::pow(1 + 0.5 * exp(-3.0 * distance_to_goal),0.5);
+    }
+
+
+private:
+
 
     std::string     action_name;
     std::string     world_frame;
 
-    tf::Pose        curr_ee_pose;   /// end-effector current position
+   // tf::Pose        curr_ee_pose;   /// end-effector current position
     tf::Pose        des_ee_pose;    /// desired end-effector position
-    tf::Pose        ee_target;      /// target end-effecotr position
 
-    double          model_dt;
+    double          dt;
+    double          default_speed;
     double          reachingThreshold;
     double          orientationThreshold;
+
     bool            initial_config;
     bool            simulation;
     std::size_t     tf_count;
