@@ -30,7 +30,6 @@ private:
     std::string     action_name;
     std::string     world_frame;
 
-
     tf::Pose        curr_ee_pose;   /// end-effector current position
     tf::Pose        des_ee_pose;    /// desired end-effector position
     tf::Pose        ee_target;      /// target end-effecotr position
