@@ -26,15 +26,14 @@ public:
 
 private:
 
-    bool goto_cartesian_open_loop(alib_server& as_,alib_feedback& feedback,const cptrGoal& goal);
+   // bool goto_cartesian_open_loop(alib_server& as_,alib_feedback& feedback,const cptrGoal& goal);
 
     bool goto_cartesian_closed_loop(alib_server& as_,alib_feedback& feedback,const cptrGoal& goal);
 
 private:
 
-    // https://en.wikipedia.org/wiki/Generalised_logistic_function
-    inline double gen_logisitic(double max_speed,double distance_to_goal){
-        return max_speed / std::pow(1 + 0.5 * exp(-3.0 * distance_to_goal),0.5);
+    inline double bell_velocity(double x,double beta,double off){
+        return 1.0 - exp(-beta * (x+off) * (x+off));
     }
 
 

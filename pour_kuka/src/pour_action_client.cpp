@@ -65,9 +65,19 @@ Pour_client::Pour_client(const std::string& name)
     goal.attractor_frame    = back_attr;
     goals[goal.action_name] = goal;
 
+    geometry_msgs::Transform    home2;
+    home2.translation.x      = -0.1;
+    home2.translation.y      =  0;
+    home2.translation.z      =  -0.2;
+
+    home2.rotation.w         =  1;
+    home2.rotation.x         =  0;
+    home2.rotation.y         =  0;
+    home2.rotation.z         =  0;
+
     kac::Goal goal2;
     goal2.action_name        = "goto_home";
-    goal2.attractor_frame    = home;
+    goal2.attractor_frame    = home2;
     goal2.action_type        = "closed_loop";
     goals[goal2.action_name] = goal2;
 

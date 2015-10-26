@@ -1,4 +1,5 @@
 #include "kuka_common_action_server/kuka_goto_cart_as.h"
+#include <functional>
 
 namespace asrv{
 
@@ -17,22 +18,22 @@ Kuka_goto_cart_as::Kuka_goto_cart_as(ros::NodeHandle& nh, const Action_ee_initia
     simulation              = true;
     tf_count                = 0;
     dt                      = 1.0/100.0;
-    default_speed           = 0.01; // [m/s]
+    default_speed           = 0.05; // [m/s]
 }
 
 bool Kuka_goto_cart_as::execute_CB(alib_server& as_,alib_feedback& feedback_,const cptrGoal& goal){
 
-    ROS_INFO("Kuka_goto_cart_as::execute_CB");
+   /* ROS_INFO("Kuka_goto_cart_as::execute_CB");
     ROS_INFO("action_name : [%s]",goal->action_name.c_str());
     ROS_INFO("action_type : [%s]",goal->action_type.c_str());
-    ROS_INFO("class action_name : [%s]",action_name.c_str());
+    ROS_INFO("class action_name : [%s]",action_name.c_str());*/
 
 
     if (action_name == (goal->action_name))
     {
-        ROS_INFO("passed action_name == ");
+        return goto_cartesian_closed_loop(as_,feedback_,goal);
 
-        std::string a_type = goal->action_type;
+        /*std::string a_type = goal->action_type;
         if(a_type.size() != 0){
 
             if(a_type == "open_loop"){
@@ -46,8 +47,7 @@ bool Kuka_goto_cart_as::execute_CB(alib_server& as_,alib_feedback& feedback_,con
                 return false;
             }
         }else{
-            return goto_cartesian_open_loop(as_,feedback_,goal);
-        }
+        }*/
 
     }else{
         std::string msg;
@@ -57,6 +57,110 @@ bool Kuka_goto_cart_as::execute_CB(alib_server& as_,alib_feedback& feedback_,con
     }
 }
 
+bool Kuka_goto_cart_as::goto_cartesian_closed_loop(alib_server& as_,alib_feedback& feedback,const cptrGoal& goal){
+
+  //  ROS_INFO("goto_cartesian_closed_loop");
+
+    tf::Transform trans_att;
+
+    trans_att.setRotation(tf::Quaternion(goal->attractor_frame.rotation.x,goal->attractor_frame.rotation.y,
+                                         goal->attractor_frame.rotation.z,goal->attractor_frame.rotation.w));
+    trans_att.setOrigin(tf::Vector3(goal->attractor_frame.translation.x, goal->attractor_frame.translation.y,
+                                    goal->attractor_frame.translation.z));
+
+    ros::Rate wait(1);
+    tf::Vector3     current_origin = ee_pose.getOrigin();
+    tf::Quaternion  current_orient = ee_pose.getRotation();
+
+
+    tf::Vector3    target_pos    = trans_att.getOrigin() + current_origin;
+    tf::Quaternion target_orient = trans_att.getRotation();
+
+    ROS_INFO("current_origin (%f %f %f)",current_origin.x(),current_origin.y(),current_origin.z());
+    ROS_INFO("current_target (%f %f %f)",target_pos.x(),target_pos.y(),target_pos.z());
+
+    tf::Vector3    velocity;
+
+    double rate;
+    if(goal->dt > 0){
+        rate = 1.0/(goal->dt);
+    }else{
+        rate = 1.0/dt;
+    }
+
+    double max_speed =  default_speed; // [ms]
+    double speed;
+    double dist_targ_origin = (target_pos - current_origin).length();
+    double dist_targ_target = current_orient.dot(target_orient);
+    double max_dist         = dist_targ_origin;
+    double slerp_t          = 0.2;
+    double beta             = (1.0/10.0);
+    double offset           = 1.5;
+
+    ROS_INFO("distance_origin_target %f",dist_targ_origin);
+    ROS_INFO("distance_orient_target %f",dist_targ_target);
+    ROS_INFO("max_dist %f",max_dist);
+    ROS_INFO("max_speed %f [m/s]",max_speed);
+    ROS_INFO("rate %f",rate);
+
+    ros::Rate loop_rate(rate);
+    while(ros::ok() && bBaseRun) {
+
+        current_origin = ee_pose.getOrigin();
+        current_orient = ee_pose.getRotation();
+
+        // Linear velocity between start position and target
+        velocity = (target_pos - current_origin);
+
+        // compute desired speed (function of distance to goal, bell shapped velocity curve)
+        dist_targ_origin = velocity.length(); // [meters]
+        speed            = (max_speed * bell_velocity(dist_targ_origin * 100.0,beta,offset));    // convert [m] -> [cm]
+        velocity         = speed * velocity.normalize();
+
+        // ROS_INFO("dist %f [m] %f [cm] %f [speed] %f [bell]",dist_targ_origin,dist_targ_origin*100,speed,bell_velocity(dist_targ_origin * 100.0,beta,offset));
+
+        des_ee_pose.setOrigin(velocity + current_origin);
+
+       // Quaternion slerp interpolation between start and final orientation
+       // slerp_t =  1 - (dist_targ_origin/max_dist);
+       // ROS_INFO("slerp_t: %f",slerp_t);
+
+       // ROS_INFO("c_q %f %f %f %f",current_orient.w(),current_orient.x(),current_orient.y(),current_orient.z());
+       // ROS_INFO("t_q %f %f %f %f",target_orient.w(),target_orient.x(),target_orient.y(),target_orient.z());
+
+        des_ee_pose.setRotation( current_orient.slerp(target_orient, slerp_t)      );
+
+       // ROS_INFO("q: %f %f %f %f",des_ee_pose.getRotation().w(),
+       // des_ee_pose.getRotation().x(),des_ee_pose.getRotation().y(),des_ee_pose.getRotation().z());
+
+        dist_targ_target = acos(abs(target_orient.dot(current_orient)));
+        sendPose(des_ee_pose);
+
+        feedback.progress = 0;
+        as_.publishFeedback(feedback);
+        if (as_.isPreemptRequested() || !ros::ok())
+        {
+            ROS_INFO("Preempted");
+            as_.setPreempted();
+            bBaseRun = false;
+            break;
+        }
+
+        if (( dist_targ_origin < reachingThreshold) && (dist_targ_target < orientationThreshold || std::isnan(dist_targ_target)) ){
+            ROS_INFO("reached goal");
+            break;
+        }
+
+        loop_rate.sleep();
+    }
+    if(!bBaseRun){
+        return false;
+    }else{
+        return true;
+    }
+}
+
+/*
 bool Kuka_goto_cart_as::goto_cartesian_open_loop(alib_server& as_,alib_feedback& feedback,const cptrGoal& goal){
 
     tf::Transform trans_att;
@@ -107,92 +211,9 @@ bool Kuka_goto_cart_as::goto_cartesian_open_loop(alib_server& as_,alib_feedback&
     }else{
         return true;
     }
-}
-
-bool Kuka_goto_cart_as::goto_cartesian_closed_loop(alib_server& as_,alib_feedback& feedback,const cptrGoal& goal){
-
-    ROS_INFO("goto_cartesian_closed_loop");
-
-    tf::Transform trans_att;
-
-    trans_att.setRotation(tf::Quaternion(goal->attractor_frame.rotation.x,goal->attractor_frame.rotation.y,
-                                         goal->attractor_frame.rotation.z,goal->attractor_frame.rotation.w));
-    trans_att.setOrigin(tf::Vector3(goal->attractor_frame.translation.x, goal->attractor_frame.translation.y,
-                                    goal->attractor_frame.translation.z));
-
-    tf::Quaternion target_orient = trans_att.getRotation();
-    tf::Vector3    target_pos    = trans_att.getOrigin();
-    tf::Vector3    velocity;
-
-    tf::Vector3    current_origin;
-    tf::Quaternion current_orient;
-
-    double rate;
-    if(goal->dt > 0){
-        rate = 1.0/(goal->dt);
-    }else{
-        rate = dt;
-    }
-
-    double max_speed =  default_speed * (1.0/rate); // [ms]
-    double speed;
-    double distance_origin_target = (target_pos - current_origin).length();
-    double distance_orient_target = current_orient.dot(target_orient);
-    double max_dist               = distance_origin_target;
-    double slerp_t = 0;
-
-    ROS_INFO("distance_origin_target %f",distance_origin_target);
-    ROS_INFO("distance_orient_target %f",distance_orient_target);
-    ROS_INFO("max_dist %f",max_dist);
-
-    ros::Rate loop_rate(rate);
-    while(ros::ok() && bBaseRun) {
-
-        current_origin = ee_pose.getOrigin();
-        current_orient = ee_pose.getRotation();
+}*/
 
 
-        // Linear velocity between start position and target
-        velocity = (target_pos - current_origin);
-
-        // compute desired speed (function of distance to goal, bell shapped velocity curve)
-        distance_origin_target = velocity.length();
-        speed                  = gen_logisitic(max_speed,distance_origin_target);
-        velocity               = speed * velocity.normalize();
-
-        des_ee_pose.setOrigin(velocity + current_origin);
-
-        // Quaternion slerp interpolation between start and final orientation
-        slerp_t =  1 - (distance_origin_target/max_dist);
-        des_ee_pose.setRotation( current_orient.slerp(target_orient, slerp_t)      );
-        distance_orient_target = current_orient.dot(target_orient);
-
-        sendPose(des_ee_pose);
-
-        feedback.progress = 0;
-        as_.publishFeedback(feedback);
-        if (as_.isPreemptRequested() || !ros::ok())
-        {
-            ROS_INFO("Preempted");
-            as_.setPreempted();
-            bBaseRun = false;
-            break;
-        }
-
-        if ((reachingThreshold >= distance_origin_target) &&
-            (orientationThreshold >= distance_orient_target)){
-            break;
-        }
-
-        loop_rate.sleep();
-    }
-    if(!bBaseRun){
-        return false;
-    }else{
-        return true;
-    }
-
-}
 
 
 }
