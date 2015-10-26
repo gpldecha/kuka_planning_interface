@@ -64,7 +64,7 @@ void Base_j_action::jStateImpedanceCallback(const kuka_fri_bridge::JointStateImp
 
 }
 
-void Base_j_action::sendJointPos(const Eigen::VectorXd& j_pose){
+void Base_j_action::setJointPos(const Eigen::VectorXd& j_pose){
     assert(j_pose.size() == KUKA_NUM_JOINTS);
     for(std::size_t i = 0; i < KUKA_NUM_JOINTS;i++){
         j_state.position[i] = j_pose[i];
@@ -73,7 +73,7 @@ void Base_j_action::sendJointPos(const Eigen::VectorXd& j_pose){
     }
 }
 
-void Base_j_action::sendJointVel(const Eigen::VectorXd& j_vel){
+void Base_j_action::setJointVel(const Eigen::VectorXd& j_vel){
     assert(j_vel.size() == KUKA_NUM_JOINTS);
     for(std::size_t i = 0; i < KUKA_NUM_JOINTS;i++){
 
@@ -84,17 +84,42 @@ void Base_j_action::sendJointVel(const Eigen::VectorXd& j_vel){
 
 }
 
+void Base_j_action::sendJointState(){
+    sensor_msgs::JointState j_msg;
+    j_msg.position.resize(KUKA_NUM_JOINTS);
+    j_msg.velocity.resize(KUKA_NUM_JOINTS);
 
-void Base_j_action::sendJointImpedance(const Eigen::VectorXd& j_stiff){
-    assert(j_stiff.size() == KUKA_NUM_JOINTS);
     for(std::size_t i = 0; i < KUKA_NUM_JOINTS;i++){
-
-        j_state_imp.position[i] = j_state.position[i];
-        j_state_imp.velocity[i] = j_state.velocity[i];
-        j_state_imp.stiffness[i] = j_stiff[i];
+        j_msg.position[i] = j_state.position[i];
+        j_msg.velocity[i] = j_state.velocity[i];
     }
+
+    pub.publish(j_msg);
 
 }
 
+
+void Base_j_action::sendJointImpedance(const Eigen::VectorXd& j_stiff){
+    assert(j_stiff.size() == KUKA_NUM_JOINTS);
+
+    kuka_fri_bridge::JointStateImpedance j_imp_msg;
+    j_imp_msg.position.resize(KUKA_NUM_JOINTS);
+    j_imp_msg.velocity.resize(KUKA_NUM_JOINTS);
+    j_imp_msg.stiffness.resize(KUKA_NUM_JOINTS);
+
+    for(std::size_t i = 0; i < KUKA_NUM_JOINTS;i++){
+        j_state_imp.position[i] = j_state.position[i];
+        j_state_imp.velocity[i] = j_state.velocity[i];
+        j_state_imp.stiffness[i] = j_stiff[i];
+
+        j_imp_msg.position[i] = j_state_imp.position[i];
+        j_imp_msg.velocity[i] = j_state_imp.velocity[i];
+        j_imp_msg.stiffness[i] = j_state_imp.stiffness[i];
+    }
+
+
+    pub_imp.publish(j_imp_msg);
+
+}
 
 

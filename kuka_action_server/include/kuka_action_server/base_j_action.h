@@ -28,9 +28,11 @@ public:
 
    void jStateImpedanceCallback(const kuka_fri_bridge::JointStateImpedanceConstPtr& msg);
 
-   void sendJointPos(const Eigen::VectorXd& j_pose);
+   void setJointPos(const Eigen::VectorXd& j_pose);
 
-   void sendJointVel(const Eigen::VectorXd& j_vel);
+   void setJointVel(const Eigen::VectorXd& j_vel);
+
+   void sendJointState();
 
    void sendJointImpedance(const Eigen::VectorXd& j_stiffness);
 

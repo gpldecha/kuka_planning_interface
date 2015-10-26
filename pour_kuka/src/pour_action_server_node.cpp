@@ -2,6 +2,7 @@
 #include <functional>
 #include "ros_param_parser/ros_param_parser.h"
 #include "kuka_common_action_server/kuka_goto_cart_as.h"
+#include "kuka_common_action_server/kuka_grav_as.h"
 
 
 
@@ -44,6 +45,11 @@ int main(int argc, char** argv) {
     action_ee_init.action_name = "goto_home";
     asrv::Kuka_goto_cart_as kuka_goto_cart_as(nh,action_ee_init);
 
+    // Grav Comp actions
+    asrv::Action_j_initialiser _action_j_init;
+    _action_j_init.action_name = "grav_comp";
+    asrv::Kuka_grav_as kuka_grav_as(nh,_action_j_init);
+
 
     /**  ------------- Initialise Action Server -------------
      *
@@ -69,6 +75,7 @@ int main(int argc, char** argv) {
     action_server.push_back(&pour_action_server,"back");
     action_server.push_back(&pour_action_server,"pour");
     action_server.push_back(&kuka_goto_cart_as,"goto_home");
+    action_server.push_back(&kuka_grav_as,"grav_comp");
 
     ros::spin();
 

@@ -93,7 +93,7 @@ bool Kuka_goto_cart_as::goto_cartesian_closed_loop(alib_server& as_,alib_feedbac
     double dist_targ_origin = (target_pos - current_origin).length();
     double dist_targ_target = current_orient.dot(target_orient);
     double max_dist         = dist_targ_origin;
-    double slerp_t          = 0.75;
+    double slerp_t          = 0.5;
     double beta             = (1.0/10.0);
     double offset           = 0;
     double prev_orient_error  = 0.0; //[rad]
