@@ -93,9 +93,10 @@ bool Kuka_goto_cart_as::goto_cartesian_closed_loop(alib_server& as_,alib_feedbac
     double dist_targ_origin = (target_pos - current_origin).length();
     double dist_targ_target = current_orient.dot(target_orient);
     double max_dist         = dist_targ_origin;
-    double slerp_t          = 0.2;
+    double slerp_t          = 0.75;
     double beta             = (1.0/10.0);
-    double offset           = 1.5;
+    double offset           = 0;
+    double prev_orient_error  = 0.0; //[rad]
 
     ROS_INFO("distance_origin_target %f",dist_targ_origin);
     ROS_INFO("distance_orient_target %f",dist_targ_target);
@@ -146,11 +147,17 @@ bool Kuka_goto_cart_as::goto_cartesian_closed_loop(alib_server& as_,alib_feedbac
             break;
         }
 
-        if (( dist_targ_origin < reachingThreshold) && (dist_targ_target < orientationThreshold || std::isnan(dist_targ_target)) ){
+        float diff_ori_err = abs(dist_targ_target - prev_orient_error);
+        ROS_INFO_STREAM("Distance to target origin: " << dist_targ_origin << " reachingThreshold: " << reachingThreshold );
+        ROS_INFO_STREAM("Distance to target orient: " << dist_targ_target << " orientationsThreshold: " << orientationThreshold );
+        ROS_INFO_STREAM("Difference in Orientation error: " << diff_ori_err);
+
+        if (( dist_targ_origin < reachingThreshold) && (dist_targ_target < orientationThreshold || std::isnan(dist_targ_target) || diff_ori_err < 0.001) ){
             ROS_INFO("reached goal");
             break;
         }
 
+        prev_orient_error = dist_targ_target; //[rad]
         loop_rate.sleep();
     }
     if(!bBaseRun){
