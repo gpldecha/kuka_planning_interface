@@ -48,7 +48,11 @@ int main(int argc, char** argv) {
     // Grav Comp actions
     asrv::Action_j_initialiser _action_j_init;
     _action_j_init.action_name = "grav_comp";
-    asrv::Kuka_grav_as kuka_grav_as(nh,_action_j_init);
+
+    asrv::Action_ee_initialiser _action_ee_init;
+    _action_ee_init.action_name = "grav_comp";
+
+    asrv::Kuka_grav_as kuka_grav_as(nh,_action_j_init, action_ee_init);
 
 
     /**  ------------- Initialise Action Server -------------

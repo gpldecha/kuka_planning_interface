@@ -5,7 +5,7 @@ Pour_action_server::Pour_action_server(ros::NodeHandle&   nh,
             const std::string& ee_state_pos_topic,
             const std::string& ee_cmd_pos_topic,
             const std::string& ee_cmd_ft_topic)
-    :Base_ee_action(nh,ee_state_pos_topic,ee_cmd_pos_topic,ee_cmd_ft_topic)
+    :Base_ee_action(nh, ee_state_pos_topic,ee_cmd_pos_topic,ee_cmd_ft_topic)
 {
 
 
@@ -166,8 +166,8 @@ bool Pour_action_server::learned_model_execution(PouringPhase                pha
         pos_err = (trans_final_target.getOrigin() - curr_ee_pose.getOrigin()).length();
         //Real Orientation Error qdiff = acos(dot(q1_norm,q2_norm))*180/pi
         ori_err = acos(abs(trans_final_target.getRotation().dot(curr_ee_pose.getRotation())));
-      //  ROS_INFO_STREAM_THROTTLE(0.5,"Position Threshold : " << reachingThreshold << " ... Current Error: "<<pos_err);
-      //  ROS_INFO_STREAM_THROTTLE(0.5,"Orientation Threshold : " << orientationThreshold << " ... Current Error: "<<ori_err);
+        ROS_INFO_STREAM_THROTTLE(0.5,"Position Threshold : " << reachingThreshold << " ... Current Error: "<<pos_err);
+        ROS_INFO_STREAM_THROTTLE(0.5,"Orientation Threshold : " << orientationThreshold << " ... Current Error: "<<ori_err);
 
         double att_pos_err = (trans_final_target.getOrigin() - des_ee_pose.getOrigin()).length();
         double att_ori_err = acos(abs(trans_final_target.getRotation().dot(des_ee_pose.getRotation())));

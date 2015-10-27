@@ -50,8 +50,11 @@ public:
     geometry_msgs::WrenchStamped        msg_ft;
 
 
-    tf::Pose                            ee_pose;        /// end-effector position
+    tf::Pose                            ee_pose;        /// end-effector position from /joint_to_cart estimator
+    tf::Pose                            ee_kuka_pose;        /// end-effector position
     Eigen::VectorXd                     ee_ft;          /// end-effector force torque
+
+
 
     volatile bool                       isOkay, isFTOkay;
 

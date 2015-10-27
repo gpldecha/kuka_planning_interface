@@ -6,6 +6,7 @@ class topics {
 
 public:
 
+    static const std::string EE_KUKA_POSE_TOPIC;
     static const std::string EE_STATE_POSE_TOPIC;
     static const std::string EE_STATE_FT_TOPIC;
     static const std::string EE_CMD_POSE_TOPIC;

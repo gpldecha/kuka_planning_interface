@@ -4,7 +4,7 @@ project(kuka_action_server)
 ## Find catkin macros and libraries
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
 ## is used, also find other catkin packages
-find_package(catkin REQUIRED std_tools tf roscpp mathlib robotlib cds_execution tf cmake_modules )
+find_package(catkin REQUIRED std_tools roscpp mathlib robotlib cds_execution tf  cmake_modules )
 
 set(CMAKE_CXX_FLAGS "-O2 -O3 -std=c++11 -mtune=native -fPIC -Wall")
 

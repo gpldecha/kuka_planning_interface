@@ -1,6 +1,7 @@
 #include "kuka_action_server/default_topics.h"
 
 /// Cartesian default topics
+const std::string topics::EE_KUKA_POSE_TOPIC    = "/KUKA/Pose";
 const std::string topics::EE_STATE_POSE_TOPIC   = "/joint_to_cart/est_ee_pose";
 const std::string topics::EE_STATE_FT_TOPIC     = "/joint_to_cart/est_ee_ft";
 const std::string topics::EE_CMD_POSE_TOPIC     = "/cart_to_joint/des_ee_pose";

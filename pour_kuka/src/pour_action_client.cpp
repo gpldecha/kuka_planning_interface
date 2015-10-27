@@ -128,7 +128,7 @@ Pour_client::Pour_client(const std::string& name)
 
     // Go Back to Joint Impedance Mode
     des_velocity  << 0,0,0,0,0,0,0;
-    des_stiffness << 5,5,5,5,5,5,5;
+    des_stiffness << 50,50,50,50,50,50,50;
 
     for(std::size_t i = 0; i < 7;i++){
         jointStateImpedance.velocity[i]      = des_velocity[i];

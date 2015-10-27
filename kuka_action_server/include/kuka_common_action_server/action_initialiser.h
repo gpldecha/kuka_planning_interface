@@ -32,7 +32,7 @@ class Action_ee_initialiser : public Base_action_initialiser{
 
 public:
 
-    Action_ee_initialiser():Base_action_initialiser()
+  Action_ee_initialiser():Base_action_initialiser()
     {
         reachingThreshold       = 0.01;  // [m]
         orientationThreshold    = 0.05;  // [rad]
