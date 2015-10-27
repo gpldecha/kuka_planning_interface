@@ -32,23 +32,6 @@ bool Kuka_goto_cart_as::execute_CB(alib_server& as_,alib_feedback& feedback_,con
     if (action_name == (goal->action_name))
     {
         return goto_cartesian_closed_loop(as_,feedback_,goal);
-
-        /*std::string a_type = goal->action_type;
-        if(a_type.size() != 0){
-
-            if(a_type == "open_loop"){
-                return goto_cartesian_open_loop(as_,feedback_,goal);
-
-            }else if(a_type == "closed_loop"){
-                return goto_cartesian_closed_loop(as_,feedback_,goal);
-
-            }else{
-                ROS_ERROR("no such action type [%s], only 'open_loop' or 'closed_loop' actiony type available!",a_type.c_str());
-                return false;
-            }
-        }else{
-        }*/
-
     }else{
         std::string msg;
         msg = "Kuka_goto_cart_as::execute_CB: wrong action call, requested: " + goal->action_name + " actual: " + action_name;

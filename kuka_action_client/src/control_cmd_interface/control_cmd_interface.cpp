@@ -29,6 +29,8 @@ void Control_cmd_interface::nl_command_callback(const std_msgs::String::ConstPtr
 
 bool Control_cmd_interface::service_callback(kuka_action_client::String_cmd::Request& req,kuka_action_client::String_cmd::Response &res){
 
+    std::cout<< "Control_cmd_interface::service_callback" << std::endl;
+
     std::string action_name         = req.cmd;
     std::string current_action_name = kuka_action_client.current_action_name;
 
