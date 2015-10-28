@@ -13,6 +13,8 @@ Kuka_action_client::Kuka_action_client(const std::string& name)
     // default initial state, no actions are running
     b_action_running    = false;
     current_action_name = "NONE";
+
+    add_default_actions();
 }
 
 void Kuka_action_client::set_goals(std::map<std::string,Goal>& goals){

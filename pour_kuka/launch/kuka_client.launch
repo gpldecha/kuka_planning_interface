@@ -12,7 +12,7 @@
   		<param name="speech_topic" 	  	  value="$(arg speech_topic)"/>
   		<param name="action_service_name" 	  value="$(arg action_service_name)"/>
 		<param name="cmd_service_name"    	  value="$(arg cmd_service_name)"/>
-  		<param name="action_service_name" 	  value="$(arg action_server_name)"/>
+  		<param name="action_server_name" 	  value="$(arg action_server_name)"/>
   	</node>	
 	
 
