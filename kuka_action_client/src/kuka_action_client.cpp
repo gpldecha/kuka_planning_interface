@@ -1,7 +1,7 @@
 #include "kuka_action_client/kuka_action_client.h"
 #include <array>
 
-namespace kac{
+namespace ac{
 
 Kuka_action_client::Kuka_action_client(const std::string& name)
     :ac_(name,true)
@@ -51,6 +51,28 @@ bool Kuka_action_client::call_action(const std::string& name){
     }
 }
 
+bool Kuka_action_client::has_action(const std::string& name){
+
+    std::map<std::string,Goal>::iterator it;
+    it = goals.find(name);
+    if(it != goals.end()){
+        return true;
+    }else{
+        return false;
+    }
+}
+
+void Kuka_action_client::print_action_names() {
+    std::map<std::string,Goal>::iterator it;
+    it = goals.begin();
+    std::cout<<std::endl;
+    std::cout<< "=== action names ===" << std::endl;
+    for(it = goals.begin(); it != goals.end();it++){
+    std::cout<< " " << it->first << std::endl;
+    }
+    std::cout<<std::endl;
+}
+
 void Kuka_action_client::add_default_actions(){
 
     enum{KUKA_DOF = 7};
@@ -66,7 +88,7 @@ void Kuka_action_client::add_default_actions(){
 
     ///--- Gravity Compensation Actions ---///
     {
-        kac::Goal goal;
+        ac::Goal goal;
         des_velocity  =  {{0,0,0,0,0,0,0}};
         des_stiffness =  {{20,20,20,20,20,20,20}};
 
@@ -81,7 +103,7 @@ void Kuka_action_client::add_default_actions(){
         goals["to_grav_comp"]       = goal;
     }
     {
-        kac::Goal goal;
+        ac::Goal goal;
         des_velocity  =  {{0,0,0,0,0,0,0}};
         des_stiffness =  {{500,500,500,500,500,500,500}};
 

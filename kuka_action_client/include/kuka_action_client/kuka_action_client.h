@@ -19,7 +19,7 @@
 
 #include <map>
 
-namespace kac{
+namespace ac{
 
 typedef actionlib::SimpleActionClient<lasa_action_planners::PLAN2CTRLAction>    alib_client;
 typedef lasa_action_planners::PLAN2CTRLGoal                                     Goal;
@@ -50,6 +50,10 @@ public:
      * @return            : returns the outcome of the execution of the action.
      */
     bool call_action(const std::string& name);
+
+    bool has_action(const std::string& name);
+
+    void print_action_names();
 
 
 private:

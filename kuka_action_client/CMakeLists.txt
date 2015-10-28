@@ -33,11 +33,11 @@ set(SRC_DIR ${CMAKE_CURRENT_SOURCE_DIR}/src)
 include_directories(include ${catkin_INCLUDE_DIRS} ${INCLUDE_DIR} )
 
 set(H_FILES     ${INCLUDE_DIR}/kuka_action_client/kuka_action_client.h
-                ${INCLUDE_DIR}/control_cmd_interface/control_cmd_interface.h
+                ${INCLUDE_DIR}/kuka_action_client/action_client_cmd_interface.h
                 ${INCLUDE_DIR}/ros_param_parser/ros_param_parser.h)
 
 set(SRC_FILES   ${SRC_DIR}/kuka_action_client.cpp
-                ${SRC_DIR}/control_cmd_interface/control_cmd_interface.cpp)
+                ${SRC_DIR}/action_client_cmd_interface.cpp)
 
 add_library(${PROJECT_NAME} ${H_FILES} ${SRC_FILES})
 target_link_libraries(${PROJECT_NAME} ${catkin_LIBRARIES})

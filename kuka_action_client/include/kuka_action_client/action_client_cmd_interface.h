@@ -1,0 +1,67 @@
+#ifndef ACTION_CLIENT_CMD_INTERFACE_H_
+#define ACTION_CLIENT_CMD_INTERFACE_H_
+
+#include <ros/ros.h>
+
+#include "kuka_action_client/String_cmd.h"
+#include "kuka_action_client/kuka_action_client.h"
+
+#include <vector>
+#include <functional>
+#include <future>
+
+#include "std_msgs/String.h"
+#include "std_msgs/Float64.h"
+
+namespace ac{
+
+
+typedef actionlib::SimpleClientGoalState::StateEnum action_states;
+
+class Action_client_cmd_interface{
+
+public:
+
+
+public:
+
+    Action_client_cmd_interface(ros::NodeHandle          &nh,
+                          ac::Kuka_action_client  &kuka_action_client,
+                          const std::string        &action_service_name,
+                          const std::string       &cmd_service_name);
+
+    void init_nl_subscriber(std::string topic_name);
+
+private:
+
+    void nl_command_callback(const std_msgs::String::ConstPtr &msg);
+
+   // bool service_callback(kuka_action_client::String_cmd::Request& req,kuka_action_client::String_cmd::Response &res);
+
+
+private:
+
+    bool action_service_callback(kuka_action_client::String_cmd::Request& req,kuka_action_client::String_cmd::Response &res);
+
+    bool cmd_interface_callback(kuka_action_client::String_cmd::Request& req,kuka_action_client::String_cmd::Response &res);
+
+    void workThread(std::string action_name);
+
+private:
+
+    ros::NodeHandle&                   nh;
+    ac::Kuka_action_client&            kuka_action_client;
+    std::vector<ros::Subscriber>       subs;
+    boost::thread                      worker_thread;
+    ros::ServiceServer                 action_service;
+    ros::ServiceServer                 cmd_interface_service;
+    ros::Publisher                     action_server_pub;
+
+
+    actionlib::SimpleClientGoalState   curr_action_state;
+    std_msgs::String                   server_msg;
+};
+
+}
+
+#endif

@@ -3,7 +3,7 @@
 
 #include "kuka_action_client/kuka_action_client.h"
 
-class Pour_client : public kac::Kuka_action_client {
+class Pour_client : public ac::Kuka_action_client {
 
 public:
 

@@ -3,7 +3,7 @@
 #include <Eigen/Core>
 
 Pour_client::Pour_client(const std::string& name)
-    : kac::Kuka_action_client(name)
+    : ac::Kuka_action_client(name)
 {
 
     enum{KUKA_DOF = 7};
@@ -19,7 +19,7 @@ Pour_client::Pour_client(const std::string& name)
 
 
     {   /// HOME action
-        kac::Goal goal;
+        ac::Goal goal;
         goal.action_type = "LEARNED_MODEL";
         // Pouring Object (i.e. dough/plate/etc)
         geometry_msgs::Transform fake_object;
@@ -49,7 +49,7 @@ Pour_client::Pour_client(const std::string& name)
     }
 
     {   /// Pouring Phase Attractor
-        kac::Goal goal;
+        ac::Goal goal;
         geometry_msgs::Transform pour_attr;
         pour_attr.translation.x  = -0.478;
         pour_attr.translation.y  = -0.184;
@@ -65,7 +65,7 @@ Pour_client::Pour_client(const std::string& name)
     }
 
     {   /// Back Phase attractor
-        kac::Goal goal;
+        ac::Goal goal;
         geometry_msgs::Transform back_attr;
         back_attr.translation.x = -0.483;
         back_attr.translation.y =  0.091;
@@ -82,7 +82,7 @@ Pour_client::Pour_client(const std::string& name)
 
 
     {   /// Lock_joint_6
-        kac::Goal goal;
+        ac::Goal goal;
         goal.action_name        = "grav_comp";
         goal.action_type        = "velocity";
 
