@@ -18,30 +18,31 @@ Pour_client::Pour_client(const std::string& name)
     jointStateImpedance.stiffness.resize(KUKA_DOF);
 
 
+    // Pouring Object (i.e. dough/plate/etc)
+    geometry_msgs::Transform fake_object;
+    fake_object.translation.x = 0;
+    fake_object.translation.y = 0;
+    fake_object.translation.z = 0;
+    fake_object.rotation.x    = 0;
+    fake_object.rotation.y    = 0;
+    fake_object.rotation.z    = 0;
+    fake_object.rotation.w    = 1;
+
     {   /// HOME action
         ac::Goal goal;
         goal.action_type = "LEARNED_MODEL";
-        // Pouring Object (i.e. dough/plate/etc)
-        geometry_msgs::Transform fake_object;
-        fake_object.translation.x = 0;
-        fake_object.translation.y = 0;
-        fake_object.translation.z = 0;
-        fake_object.rotation.x    = 0;
-        fake_object.rotation.y    = 0;
-        fake_object.rotation.z    = 0;
-        fake_object.rotation.w    = 1;
         goal.object_frame         = fake_object;
 
         // Good Starting configuration for pouring on LWR LASA
         geometry_msgs::Transform    home;
-        home.translation.x         = -0.2;
-        home.translation.y         =  0;
-        home.translation.z         =  0.2;
+        home.translation.x = -0.483;
+        home.translation.y = 0.091;
+        home.translation.z = 0.361;
+        home.rotation.w =  0.701;
+        home.rotation.x = -0.257;
+        home.rotation.y = -0.227;
+        home.rotation.z = -0.625;
 
-        home.rotation.w            =  0;
-        home.rotation.x            =  1;
-        home.rotation.y            =  0;
-        home.rotation.z            =  0;
 
         goal.action_name           = "home";
         goal.attractor_frame       = home;
@@ -50,6 +51,9 @@ Pour_client::Pour_client(const std::string& name)
 
     {   /// Pouring Phase Attractor
         ac::Goal goal;
+        goal.action_type = "LEARNED_MODEL";
+        goal.object_frame         = fake_object;
+
         geometry_msgs::Transform pour_attr;
         pour_attr.translation.x  = -0.478;
         pour_attr.translation.y  = -0.184;
@@ -66,6 +70,9 @@ Pour_client::Pour_client(const std::string& name)
 
     {   /// Back Phase attractor
         ac::Goal goal;
+        goal.action_type = "LEARNED_MODEL";
+        goal.object_frame         = fake_object;
+
         geometry_msgs::Transform back_attr;
         back_attr.translation.x = -0.483;
         back_attr.translation.y =  0.091;
