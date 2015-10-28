@@ -1,13 +1,16 @@
-#ifndef POUR_CLIENT_H_
-#define POUR_CLIENT_H_
+#ifndef KUKA_POUR_CLIENT_H_
+#define KUKKA_POUR_CLIENT_H_
 
 #include "kuka_action_client/kuka_action_client.h"
 
-class Pour_client : public ac::Kuka_action_client {
+class Create_pour_goals {
 
 public:
 
-        Pour_client(const std::string& name);
+        Create_pour_goals();
+
+        std::map<std::string,ac::Goal> pour_goals;
+
 
 };
 

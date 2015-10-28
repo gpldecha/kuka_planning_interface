@@ -17,8 +17,8 @@ Kuka_action_client::Kuka_action_client(const std::string& name)
     add_default_actions();
 }
 
-void Kuka_action_client::set_goals(std::map<std::string,Goal>& goals){
-    this->goals = goals;
+void Kuka_action_client::push_back(std::map<std::string,Goal>& goals){
+    (this->goals).insert(goals.begin(), goals.end());
 }
 
 void Kuka_action_client::push_back(const Goal& goal,const std::string& name){

@@ -32,10 +32,10 @@ public:
     Kuka_action_client(const std::string &name);
 
     /**
-     * @brief set_goals : sets the container of available actions.
+     * @brief push_back : adds a set of goals to the goal container
      * @param goals     : map with key [action_name] and target [goal class].
      */
-    void set_goals(std::map<std::string,Goal>& goals);
+    void push_back(std::map<std::string,Goal>& goals);
 
     /**
      * @brief push_back : adds a goal to the list of goals available to the action client.

@@ -8,7 +8,6 @@
 	<include file="$(find kuka_lwr_bringup)/launch/lwr_simulation_viz.launch"/>
 
 	<include file="$(find state_transformers)/launch/joint_to_cart_lasa_pour.launch"/>
-
 	<include file="$(find state_transformers)/launch/cart_to_joint_lasa_sim_pour.launch"/>
 
 	<!-- rviz -->

@@ -37,7 +37,14 @@ int main(int argc,char** argv){
       the map is the name of the action and the value is the Goal.
 
     **/
-    Pour_client pour_client(action_server_name);
+
+    ac::Kuka_action_client kuka_action_client(action_server_name);
+
+
+    Create_pour_goals create_pour_goals;
+
+    kuka_action_client.push_back(create_pour_goals.pour_goals);
+
 
 
     /**  ------------- Initialise Control cmd  interface  -------------
@@ -45,7 +52,7 @@ int main(int argc,char** argv){
      *  It provied a ros service and a voice command interface such to
      *  command the client server to send desired action requests to the action server.
      */
-    ac::Action_client_cmd_interface action_cmd_interface(nh,pour_client,action_serivce_name,cmd_service_name);
+    ac::Action_client_cmd_interface action_cmd_interface(nh,kuka_action_client,action_serivce_name,cmd_service_name);
     action_cmd_interface.init_nl_subscriber(speech_topic);
 
 

@@ -2,9 +2,7 @@
 #include <geometry_msgs/Transform.h>
 #include <Eigen/Core>
 
-Pour_client::Pour_client(const std::string& name)
-    : ac::Kuka_action_client(name)
-{
+Create_pour_goals::Create_pour_goals(){
 
     enum{KUKA_DOF = 7};
 
@@ -46,7 +44,7 @@ Pour_client::Pour_client(const std::string& name)
 
         goal.action_name           = "home";
         goal.attractor_frame       = home;
-        goals[goal.action_name]    = goal;
+        pour_goals[goal.action_name]    = goal;
     }
 
     {   /// Pouring Phase Attractor
@@ -65,7 +63,7 @@ Pour_client::Pour_client(const std::string& name)
 
         goal.action_name        = "pour";
         goal.attractor_frame    = pour_attr;
-        goals[goal.action_name] = goal;
+        pour_goals[goal.action_name] = goal;
     }
 
     {   /// Back Phase attractor
@@ -84,7 +82,7 @@ Pour_client::Pour_client(const std::string& name)
 
         goal.action_name        = "back";
         goal.attractor_frame    = back_attr;
-        goals[goal.action_name] = goal;
+        pour_goals[goal.action_name] = goal;
     }
 
 
