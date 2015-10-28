@@ -81,22 +81,5 @@ Pour_client::Pour_client(const std::string& name)
     }
 
 
-    {   /// Lock_joint_6
-        ac::Goal goal;
-        goal.action_name        = "grav_comp";
-        goal.action_type        = "velocity";
-
-        // Go to Gravity Compensations with Joint 6 locked
-        des_velocity  =  {{0,0,0,0,0,0,0}};
-        des_stiffness =  {{0,0,0,0,0,500,0}};
-
-        for(std::size_t i = 0; i < KUKA_DOF;i++){
-            jointStateImpedance.velocity[i]      = des_velocity[i];
-            jointStateImpedance.stiffness[i]     = des_stiffness[i];
-        }
-        goal.JointStateImpedance    = jointStateImpedance;
-        goals["lock_joint_6"]       = goal;
-    }
-
 }
 

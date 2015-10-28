@@ -87,10 +87,11 @@ void Kuka_action_client::add_default_actions(){
     jointStateImpedance.stiffness.resize(KUKA_DOF);
 
     ///--- Gravity Compensation Actions ---///
+    // Go to Gravity Compensation
     {
         ac::Goal goal;
         des_velocity  =  {{0,0,0,0,0,0,0}};
-        des_stiffness =  {{20,20,20,20,20,20,20}};
+        des_stiffness =  {{0,0,0,0,0,0,0}};
 
         for(std::size_t i = 0; i < KUKA_DOF;i++){
             jointStateImpedance.velocity[i]      = des_velocity[i];
@@ -100,8 +101,43 @@ void Kuka_action_client::add_default_actions(){
         goal.action_name            = "grav_comp";
         goal.action_type            = "velocity";
         goal.JointStateImpedance    = jointStateImpedance;
-        goals["to_grav_comp"]       = goal;
+        goals["grav_comp"]       = goal;
     }
+    // Go Safe Gravity Compensation (to avoid click)
+    {
+        ac::Goal goal;
+        des_velocity  =  {{0,0,0,0,0,0,0}};
+        des_stiffness =  {{50,50,50,50,50,50,50}};
+
+        for(std::size_t i = 0; i < KUKA_DOF;i++){
+            jointStateImpedance.velocity[i]      = des_velocity[i];
+            jointStateImpedance.stiffness[i]     = des_stiffness[i];
+        }
+
+        goal.action_name            = "grav_comp";
+        goal.action_type            = "velocity";
+        goal.JointStateImpedance    = jointStateImpedance;
+        goals["safe_grav_comp"]       = goal;
+    }
+
+    // Go Back to Joint Impedance Mode
+    {
+        ac::Goal goal;
+        des_velocity  =  {{0,0,0,0,0,0,0}};
+        des_stiffness =  {{200,200,200,200,200,200,200}};
+
+        for(std::size_t i = 0; i < 7;i++){
+            jointStateImpedance.velocity[i]      = des_velocity[i];
+            jointStateImpedance.stiffness[i]     = des_stiffness[i];
+        }
+
+        goal.action_name            = "grav_comp";
+        goal.action_type            = "velocity";
+        goal.JointStateImpedance    = jointStateImpedance;
+        goals["joint_imp"]     = goal;
+    }
+
+    // Go Back to Joint Impedance with Higher Stiffness
     {
         ac::Goal goal;
         des_velocity  =  {{0,0,0,0,0,0,0}};
@@ -115,7 +151,58 @@ void Kuka_action_client::add_default_actions(){
         goal.action_name            = "grav_comp";
         goal.action_type            = "velocity";
         goal.JointStateImpedance    = jointStateImpedance;
-        goals["to_joint_stiff"]     = goal;
+        goals["joint_stiff"]     = goal;
+    }
+
+    // Go to Gravity Compensations with Joint 6 locked
+    {
+        ac::Goal goal;
+        des_velocity  =  {{0,0,0,0,0,0,0}};
+        des_stiffness =  {{0,0,0,0,0,1000,0}};
+
+        for(std::size_t i = 0; i < KUKA_DOF;i++){
+            jointStateImpedance.velocity[i]      = des_velocity[i];
+            jointStateImpedance.stiffness[i]     = des_stiffness[i];
+        }
+
+        goal.action_name            = "grav_comp";
+        goal.action_type            = "velocity";
+        goal.JointStateImpedance    = jointStateImpedance;
+        goals["lock_joint_6"]       = goal;
+    }
+
+    // Go to Gravity Compensations with Joint 5+6 locked
+    {
+        ac::Goal goal;
+        des_velocity  =  {{0,0,0,0,0,0,0}};
+        des_stiffness =  {{0,0,0,0,1000,1000,0}};
+
+        for(std::size_t i = 0; i < KUKA_DOF;i++){
+            jointStateImpedance.velocity[i]      = des_velocity[i];
+            jointStateImpedance.stiffness[i]     = des_stiffness[i];
+        }
+
+        goal.action_name            = "grav_comp";
+        goal.action_type            = "velocity";
+        goal.JointStateImpedance    = jointStateImpedance;
+        goals["lock_joint_5_6"]       = goal;
+    }
+
+    // Go to Gravity Compensations with Joint 6 locked
+    {
+        ac::Goal goal;
+        des_velocity  =  {{0,0,0,0,0,0,0}};
+        des_stiffness =  {{0,0,0,0,0,0,1000}};
+
+        for(std::size_t i = 0; i < KUKA_DOF;i++){
+            jointStateImpedance.velocity[i]      = des_velocity[i];
+            jointStateImpedance.stiffness[i]     = des_stiffness[i];
+        }
+
+        goal.action_name            = "grav_comp";
+        goal.action_type            = "velocity";
+        goal.JointStateImpedance    = jointStateImpedance;
+        goals["lock_joint_7"]       = goal;
     }
 
 }
