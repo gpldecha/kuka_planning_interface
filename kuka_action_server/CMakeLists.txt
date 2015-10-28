@@ -26,7 +26,9 @@ find_package(Eigen)
 include_directories(${INCLUDE_DIR} ${catkin_INCLUDE_DIRS} ${Eigen_INCLUDE_DIRS})
 
 
-set(H_FILES  	${INCLUDE_DIR}/kuka_action_server/base_ee_action.h
+set(H_FILES  	${INCLUDE_DIR}/kuka_action_server/base_action_server.h
+                ${INCLUDE_DIR}/kuka_action_server/default_types.h
+                ${INCLUDE_DIR}/kuka_action_server/base_ee_action.h
                 ${INCLUDE_DIR}/kuka_action_server/base_j_action.h
                 ${INCLUDE_DIR}/kuka_action_server/default_topics.h
                 ${INCLUDE_DIR}/kuka_action_server/action_server.h

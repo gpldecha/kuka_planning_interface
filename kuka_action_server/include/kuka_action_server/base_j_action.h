@@ -1,5 +1,5 @@
-#ifndef BASE_J_ACTION_H_
-#define BASE_J_ACTION_H_
+#ifndef KUKA_ACTION_SERVER_BASE_J_ACTION_H_
+#define KUKA_ACTION_SERVER_BASE_J_ACTION_H_
 
 #include <ros/ros.h>
 #include <sensor_msgs/JointState.h>
@@ -7,6 +7,8 @@
 
 #include <Eigen/Core>
 #include <Eigen/Geometry>
+
+namespace asrv{
 
 class Base_j_action{
 
@@ -54,6 +56,6 @@ public:
 
 };
 
-
+}
 
 #endif

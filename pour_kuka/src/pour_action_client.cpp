@@ -6,171 +6,97 @@ Pour_client::Pour_client(const std::string& name)
     : kac::Kuka_action_client(name)
 {
 
-    kac::Goal goal;
-    goal.action_type = "LEARNED_MODEL";
+    enum{KUKA_DOF = 7};
 
-   // Pouring Object (i.e. dough/plate/etc)
-    geometry_msgs::Transform fake_object;
-    fake_object.translation.x = 0;
-    fake_object.translation.y = 0;
-    fake_object.translation.z = 0;
-    fake_object.rotation.x = 0;
-    fake_object.rotation.y = 0;
-    fake_object.rotation.z = 0;
-    fake_object.rotation.w = 1;
+    std::array<double,KUKA_DOF> des_velocity;
+    std::array<double,KUKA_DOF> des_stiffness;
 
-    goal.object_frame       = fake_object;
-
-
-
-    // Good Starting configuration for pouring on LWR LASA
-    geometry_msgs::Transform    home;
-    home.translation.x = -0.483;
-    home.translation.y = 0.091;
-    home.translation.z = 0.361;
-    home.rotation.w =  0.701;
-    home.rotation.x = -0.257;
-    home.rotation.y = -0.227;
-    home.rotation.z = -0.625;
-
-    goal.action_name        = "home";
-    goal.attractor_frame    = home;
-    goals[goal.action_name] = goal;
-
-    // Pouring Phase Attractor
-    geometry_msgs::Transform pour_attr;
-    pour_attr.translation.x  = -0.478;
-    pour_attr.translation.y  = -0.184;
-    pour_attr.translation.z  = 0.248;
-    pour_attr.rotation.x     = 0.133;
-    pour_attr.rotation.y     =  0.112;
-    pour_attr.rotation.z     = -0.673;
-    pour_attr.rotation.w     = 0.719;
-
-    goal.action_name        = "pour";
-    goal.attractor_frame    = pour_attr;
-    goals[goal.action_name] = goal;
-
-    // Back Phase Attractor
-    geometry_msgs::Transform back_attr;
-    back_attr.translation.x = -0.483;
-    back_attr.translation.y = 0.091;
-    back_attr.translation.z = 0.361;
-    back_attr.rotation.w    =  0.701;
-    back_attr.rotation.x    = -0.257;
-    back_attr.rotation.y    = -0.227;
-    back_attr.rotation.z    = -0.625;
-
-
-    goal.action_name        = "back";
-    goal.attractor_frame    = back_attr;
-    goals[goal.action_name] = goal;
-
-    ///--- GoTo Cartesian Actions ---///
-
-    geometry_msgs::Transform    home2;
-    home2.translation.x      = -0.1;
-    home2.translation.y      =  0;
-    home2.translation.z      =  -0.2;
-
-    home2.rotation.w         =  1;
-    home2.rotation.x         =  0;
-    home2.rotation.y         =  0;
-    home2.rotation.z         =  0;
-
-    kac::Goal goal2;
-    goal2.action_name        = "goto_home";
-    goal2.attractor_frame    = home2;
-    goal2.action_type        = "closed_loop";
-    goals[goal2.action_name] = goal2;
-
-
-    ///--- Gravity Compensation Actions ---///
-    kac::Goal goal3;
     kuka_fri_bridge::JointStateImpedance jointStateImpedance;
-    jointStateImpedance.position.resize(7);
-    jointStateImpedance.velocity.resize(7);
-    jointStateImpedance.effort.resize(7);
-    jointStateImpedance.stiffness.resize(7);
+    jointStateImpedance.position.resize(KUKA_DOF);
+    jointStateImpedance.velocity.resize(KUKA_DOF);
+    jointStateImpedance.effort.resize(KUKA_DOF);
+    jointStateImpedance.stiffness.resize(KUKA_DOF);
 
-    Eigen::VectorXd des_velocity;
-    Eigen::VectorXd des_stiffness;
-    des_velocity.resize(7);
-    des_stiffness.resize(7);
 
-    // Go to Gravity Compensation
-    des_velocity  << 0,0,0,0,0,0,0;
-    des_stiffness << 0,0,0,0,0,0,0;
+    {   /// HOME action
+        kac::Goal goal;
+        goal.action_type = "LEARNED_MODEL";
+        // Pouring Object (i.e. dough/plate/etc)
+        geometry_msgs::Transform fake_object;
+        fake_object.translation.x = 0;
+        fake_object.translation.y = 0;
+        fake_object.translation.z = 0;
+        fake_object.rotation.x    = 0;
+        fake_object.rotation.y    = 0;
+        fake_object.rotation.z    = 0;
+        fake_object.rotation.w    = 1;
+        goal.object_frame         = fake_object;
 
-    for(std::size_t i = 0; i < 7;i++){
-        jointStateImpedance.velocity[i]      = des_velocity[i];
-        jointStateImpedance.stiffness[i]     = des_stiffness[i];
+        // Good Starting configuration for pouring on LWR LASA
+        geometry_msgs::Transform    home;
+        home.translation.x         = -0.2;
+        home.translation.y         =  0;
+        home.translation.z         =  0.2;
+
+        home.rotation.w            =  0;
+        home.rotation.x            =  1;
+        home.rotation.y            =  0;
+        home.rotation.z            =  0;
+
+        goal.action_name           = "home";
+        goal.attractor_frame       = home;
+        goals[goal.action_name]    = goal;
     }
 
-    goal3.action_name        = "grav_comp";
-    goal3.action_type        = "velocity";
-    goal3.JointStateImpedance    = jointStateImpedance;
-    goals["to_grav_comp"] = goal3;
+    {   /// Pouring Phase Attractor
+        kac::Goal goal;
+        geometry_msgs::Transform pour_attr;
+        pour_attr.translation.x  = -0.478;
+        pour_attr.translation.y  = -0.184;
+        pour_attr.translation.z  =  0.248;
+        pour_attr.rotation.x     =  0.133;
+        pour_attr.rotation.y     =  0.112;
+        pour_attr.rotation.z     = -0.673;
+        pour_attr.rotation.w     =  0.719;
 
-    // Go Back to Joint Impedance Mode
-    des_velocity  << 0,0,0,0,0,0,0;
-    des_stiffness << 200,200,200,200,200,200,200;
-
-    for(std::size_t i = 0; i < 7;i++){
-        jointStateImpedance.velocity[i]      = des_velocity[i];
-        jointStateImpedance.stiffness[i]     = des_stiffness[i];
+        goal.action_name        = "pour";
+        goal.attractor_frame    = pour_attr;
+        goals[goal.action_name] = goal;
     }
 
-    goal3.action_name        = "grav_comp";
-    goal3.action_type        = "velocity";
-    goal3.JointStateImpedance    = jointStateImpedance;
-    goals["to_joint_imp"] = goal3;
+    {   /// Back Phase attractor
+        kac::Goal goal;
+        geometry_msgs::Transform back_attr;
+        back_attr.translation.x = -0.483;
+        back_attr.translation.y =  0.091;
+        back_attr.translation.z =  0.361;
+        back_attr.rotation.w    =  0.701;
+        back_attr.rotation.x    = -0.257;
+        back_attr.rotation.y    = -0.227;
+        back_attr.rotation.z    = -0.625;
 
-    // Go Back to Joint Impedance Mode
-    des_velocity  << 0,0,0,0,0,0,0;
-    des_stiffness << 50,50,50,50,50,50,50;
-
-    for(std::size_t i = 0; i < 7;i++){
-        jointStateImpedance.velocity[i]      = des_velocity[i];
-        jointStateImpedance.stiffness[i]     = des_stiffness[i];
+        goal.action_name        = "back";
+        goal.attractor_frame    = back_attr;
+        goals[goal.action_name] = goal;
     }
 
-    goal3.action_name        = "grav_comp";
-    goal3.action_type        = "velocity";
-    goal3.JointStateImpedance    = jointStateImpedance;
-    goals["to_joint_imp_incr"] = goal3;
 
+    {   /// Lock_joint_6
+        kac::Goal goal;
+        goal.action_name        = "grav_comp";
+        goal.action_type        = "velocity";
 
-    // Go Back to Joint Impedance Mode
-    des_velocity  << 0,0,0,0,0,0,0;
-    des_stiffness << 500,500,500,500,500,500,500;
+        // Go to Gravity Compensations with Joint 6 locked
+        des_velocity  =  {{0,0,0,0,0,0,0}};
+        des_stiffness =  {{0,0,0,0,0,500,0}};
 
-    for(std::size_t i = 0; i < 7;i++){
-        jointStateImpedance.velocity[i]      = des_velocity[i];
-        jointStateImpedance.stiffness[i]     = des_stiffness[i];
+        for(std::size_t i = 0; i < KUKA_DOF;i++){
+            jointStateImpedance.velocity[i]      = des_velocity[i];
+            jointStateImpedance.stiffness[i]     = des_stiffness[i];
+        }
+        goal.JointStateImpedance    = jointStateImpedance;
+        goals["lock_joint_6"]       = goal;
     }
-
-    goal3.action_name        = "grav_comp";
-    goal3.action_type        = "velocity";
-    goal3.JointStateImpedance    = jointStateImpedance;
-    goals["to_joint_stiff"] = goal3;
-
-    // Go to Gravity Compensations with Joint 6 locked
-    des_velocity  << 0,0,0,0,0,0,0;
-    des_stiffness << 0,0,0,0,0,500,0;
-
-    for(std::size_t i = 0; i < 7;i++){
-        jointStateImpedance.velocity[i]      = des_velocity[i];
-        jointStateImpedance.stiffness[i]     = des_stiffness[i];
-    }
-
-    goal3.action_name        = "grav_comp";
-    goal3.action_type        = "velocity";
-    goal3.JointStateImpedance    = jointStateImpedance;
-    goals["lock_joint_6"] = goal3;
-
-
-
 
 }
 

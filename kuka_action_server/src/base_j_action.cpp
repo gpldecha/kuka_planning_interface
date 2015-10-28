@@ -1,6 +1,8 @@
 #include "kuka_action_server/base_j_action.h"
 #include <assert.h>
 
+namespace asrv{
+
 Base_j_action::Base_j_action(ros::NodeHandle &nh,
                              const std::string &j_state_pose_topic,
                              const std::string &j_cmd_pos_topic,
@@ -119,6 +121,8 @@ void Base_j_action::sendJointImpedance(const Eigen::VectorXd& j_stiff){
 
 
     pub_imp.publish(j_imp_msg);
+
+}
 
 }
 

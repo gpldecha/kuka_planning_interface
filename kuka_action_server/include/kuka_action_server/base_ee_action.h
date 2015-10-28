@@ -1,5 +1,5 @@
-#ifndef BASE_EE_ACTION_H_
-#define BASE_EE_ACTION_H_
+#ifndef KUKA_ACTION_SERVER_BASE_EE_ACTION_H_
+#define KUKA_ACTION_SERVER_BASE_EE_ACTION_H_
 
 /**
     Base End Effector Action
@@ -24,6 +24,9 @@
 
 #include <Eigen/Core>
 #include <Eigen/Geometry>
+
+
+namespace asrv{
 
 class Base_ee_action{
 
@@ -60,4 +63,5 @@ public:
 
 };
 
+}
 #endif

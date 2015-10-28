@@ -1,5 +1,5 @@
-#ifndef ACTION_SERVER_H_
-#define ACTION_SERVER_H_
+#ifndef KUKA_ACTION_SERVER_ACTION_SERVER_H_
+#define KUKA_ACTION_SERVER_ACTION_SERVER_H_
 
 /**
     Action Server
@@ -18,9 +18,6 @@
 #include <tf/tf.h>
 #include <tf/transform_listener.h>
 
-//-- Custom ActionLib Stuff --//
-#include "actionlib/server/simple_action_server.h"
-#include <lasa_action_planners/PLAN2CTRLAction.h>
 
 //-- Message Types --//
 #include <robohow_common_msgs/MotionPhase.h>
@@ -28,50 +25,24 @@
 #include <robohow_common_msgs/GaussianMixtureModel.h>
 #include <robohow_common_msgs/GaussianDistribution.h>
 
+#include "kuka_action_server/base_action_server.h"
+#include "kuka_action_server/default_types.h"
+
+#include "kuka_common_action_server/kuka_grav_as.h"
+
+#include <memory>
+
+/*
+#include "kuka_common_action_server/kuka_goto_cart_as.h"
+#include "kuka_common_action_server/kuka_goto_joint_as.h"
+*/
 #include <std_msgs/String.h>
-
 #include <functional>
-
 #include <map>
 
 
 namespace asrv{
 
-typedef actionlib::SimpleActionServer<lasa_action_planners::PLAN2CTRLAction>    alib_server;
-typedef lasa_action_planners::PLAN2CTRLFeedback                                 alib_feedback;
-typedef lasa_action_planners::PLAN2CTRLResult                                   alib_result;
-typedef lasa_action_planners::PLAN2CTRLGoalConstPtr                             cptrGoal;
-
-/**
- * @brief The Base_action_server class : Interface to be implemented by user. Each
- * control policy, search method, robot motion heuristic, etc.. has to inherit
- * The Base_action_server class.
- */
-class Base_action_server{
-
-public:
-
-    Base_action_server(){
-        bBaseRun = false;
-    }
-
-    /**
-     * @brief execute_CB : server action callbac, this function holds the implementation of the
-     *                     robots control policy. In this function the user has to send control
-     *                     information to the robot.
-     * @param as_        : reference to the action server
-     */
-    virtual bool execute_CB(alib_server& as_,alib_feedback& feedback,const cptrGoal& goal) = 0;
-
-public:
-
-    /**
-    * @brief bBaseRun : set to false the execute_CB will terminate and return, true will allow
-    *                   execute_CB to run.
-    */
-   volatile bool bBaseRun;
-
-};
 
 /**
  * @brief The Action_server class : Contains all off the users implementation of verious control
@@ -101,6 +72,15 @@ private:
 
 private:
 
+    /**
+     * @brief add_default_actions   : initialiases and adds default actions which are very common to
+     *                                all users. Actions such as gravity compensation and goto cartesian
+     *                                and joint positions.
+     */
+    void add_default_actions(ros::NodeHandle& nh);
+
+private:
+
     // NodeHandle instance must be created before this line. Otherwise strange error may occur.
     alib_server                         as_;
     std::string                         action_name_;
@@ -117,6 +97,9 @@ private:
      */
     std::map<std::string,Base_action_server*>           actions;
     std::map<std::string,Base_action_server*>::iterator actions_it;
+
+    // Default actions made available to the user
+    std::shared_ptr<asrv::Kuka_grav_as>                 ptr_kuka_grav_as;
 
 };
 

@@ -7,7 +7,9 @@
 namespace asrv{
 
 
-Kuka_grav_as::Kuka_grav_as(ros::NodeHandle&  nh, const Action_j_initialiser &init, const Action_ee_initialiser &action_ee_init):
+Kuka_grav_as::Kuka_grav_as(ros::NodeHandle&  nh,
+                           const Action_j_initialiser &init,
+                           const Action_ee_initialiser &action_ee_init):
      Base_j_action(nh,
                    init.j_state_pose_topic,
                    init.j_cmd_pos_topic,

@@ -1,4 +1,5 @@
 #include "kuka_action_server/default_topics.h"
+namespace asrv{
 
 /// Cartesian default topics
 const std::string topics::EE_KUKA_POSE_TOPIC    = "/KUKA/Pose";
@@ -13,3 +14,5 @@ const std::string topics::J_STATE_POSE_TOPIC    =  "/joint_states";
 const std::string topics::J_IMP_STATE_TOPIC    =  "/joint_imp_states";
 const std::string topics::J_CMD_POSE_TOPIC      =  "/KUKA/joint_cmd";
 const std::string topics::J_IMP_CMD_TOPIC      =  "/KUKA/joint_imp_cmd";
+
+}

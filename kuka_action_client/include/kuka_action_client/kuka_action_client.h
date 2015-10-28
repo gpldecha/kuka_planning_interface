@@ -52,6 +52,16 @@ public:
     bool call_action(const std::string& name);
 
 
+private:
+
+
+    /**
+     * @brief add_default_actions   : adds default action definitions, such as gravity compensation,
+     *                                etc...
+     */
+    void add_default_actions();
+
+
 public:
 
     alib_client                ac_;
@@ -72,6 +82,7 @@ public:
      * action server. If no actions are currently in execution the value will be NONE.
      */
     std::string                current_action_name;
+
 
 
 };

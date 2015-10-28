@@ -1,7 +1,10 @@
-#ifndef DEFAULT_TOPICS_H_
-#define DEFAULT_TOPICS_H_
+#ifndef KUKA_ACTION_SERVER_DEFAULT_TOPICS_H_
+#define KUKA_ACTION_SERVER_DEFAULT_TOPICS_H_
 
 #include <string>
+
+namespace asrv{
+
 class topics {
 
 public:
@@ -20,6 +23,6 @@ public:
 
 };
 
-
+}
 
 #endif

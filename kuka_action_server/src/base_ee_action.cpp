@@ -1,5 +1,7 @@
 #include "kuka_action_server/base_ee_action.h"
 
+namespace asrv{
+
 Base_ee_action::Base_ee_action(ros::NodeHandle&   nh,
                          const std::string& ee_state_pos_topic,
                          const std::string& ee_cmd_pos_topic,
@@ -56,4 +58,6 @@ void Base_ee_action::sendPose(const tf::Pose& pose_) {
     msg.pose.orientation.w = pose_.getRotation().w();
 
     pub_.publish(msg);
+}
+
 }

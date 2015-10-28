@@ -14,7 +14,7 @@
 
 #include "CDSExecution.h"
 
-class Pour_action_server : public Base_ee_action, public asrv::Base_action_server
+class Pour_action_server : public asrv::Base_ee_action, public asrv::Base_action_server
 {
 public:
 
@@ -33,9 +33,9 @@ public:
 public:
 
     Pour_action_server(ros::NodeHandle&   nh,
-                const std::string& ee_state_pos_topic = topics::EE_STATE_POSE_TOPIC,
-                const std::string& ee_cmd_pos_topic   = topics::EE_CMD_POSE_TOPIC,
-                const std::string& ee_cmd_ft_topic    = topics::EE_CMD_FT_TOPIC);
+                const std::string& ee_state_pos_topic = asrv::topics::EE_STATE_POSE_TOPIC,
+                const std::string& ee_cmd_pos_topic   = asrv::topics::EE_CMD_POSE_TOPIC,
+                const std::string& ee_cmd_ft_topic    = asrv::topics::EE_CMD_FT_TOPIC);
 
     void initialize();
 

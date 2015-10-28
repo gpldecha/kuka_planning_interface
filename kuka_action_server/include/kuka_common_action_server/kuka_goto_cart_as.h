@@ -1,5 +1,5 @@
-#ifndef KUKA_GOTO_CART_AS_H_
-#define KUKA_GOTO_CART_AS_H_
+#ifndef KUKA_ACTION_SERVER_KUKA_GOTO_CART_AS_H_
+#define KUKA_ACTION_SERVER_KUKA_GOTO_CART_AS_H_
 
 /**
   *  Kuka goto cartesian action server
@@ -10,7 +10,7 @@
   *
   **/
 
-#include "kuka_action_server/action_server.h"
+#include "kuka_action_server/base_action_server.h"
 #include "kuka_action_server/base_ee_action.h"
 #include "kuka_common_action_server/action_initialiser.h"
 
@@ -25,8 +25,6 @@ public:
     virtual bool execute_CB(alib_server& as_,alib_feedback& feedback,const cptrGoal& goal);
 
 private:
-
-   // bool goto_cartesian_open_loop(alib_server& as_,alib_feedback& feedback,const cptrGoal& goal);
 
     bool goto_cartesian_closed_loop(alib_server& as_,alib_feedback& feedback,const cptrGoal& goal);
 

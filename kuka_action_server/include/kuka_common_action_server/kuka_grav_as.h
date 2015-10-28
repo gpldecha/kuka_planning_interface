@@ -1,14 +1,16 @@
-#ifndef KUKA_GRAV_AS_H_
-#define KUKA_GRAV_AS_H_
+#ifndef KUKA_ACTION_SERVER_KUKA_GRAV_AS_H_
+#define KUKA_ACTION_SERVER_KUKA_GRAV_AS_H_
 
-#include "kuka_action_server/action_server.h"
+#include "kuka_action_server/default_types.h"
+#include "kuka_action_server/base_action_server.h"
+
 #include "kuka_action_server/base_j_action.h"
 #include "kuka_action_server/base_ee_action.h"
 #include "kuka_common_action_server/action_initialiser.h"
 
 namespace asrv{
 
-class Kuka_grav_as:  public Base_j_action, public Base_ee_action, public Base_action_server{
+class Kuka_grav_as:  public Base_j_action, public Base_ee_action, public Base_action_server {
 
 public:
 

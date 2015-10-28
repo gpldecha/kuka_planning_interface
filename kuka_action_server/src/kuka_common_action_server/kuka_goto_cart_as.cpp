@@ -56,7 +56,7 @@ bool Kuka_goto_cart_as::goto_cartesian_closed_loop(alib_server& as_,alib_feedbac
     tf::Quaternion  current_orient = ee_pose.getRotation();
 
 
-    tf::Vector3    target_pos    = trans_att.getOrigin() + current_origin;
+    tf::Vector3    target_pos    = trans_att.getOrigin();
     tf::Quaternion target_orient = trans_att.getRotation();
 
     ROS_INFO("current_origin (%f %f %f)",current_origin.x(),current_origin.y(),current_origin.z());
@@ -87,8 +87,17 @@ bool Kuka_goto_cart_as::goto_cartesian_closed_loop(alib_server& as_,alib_feedbac
     ROS_INFO("max_speed %f [m/s]",max_speed);
     ROS_INFO("rate %f",rate);
 
+
+    static tf::TransformBroadcaster br;
+  //  tf::Transform trans_ee_target;
+  //  trans_ee_target.setOrigin();
+
+
     ros::Rate loop_rate(rate);
     while(ros::ok() && bBaseRun) {
+
+        br.sendTransform(tf::StampedTransform(trans_att, ros::Time::now(), world_frame, "ee_final"));
+
 
         current_origin = ee_pose.getOrigin();
         current_orient = ee_pose.getRotation();

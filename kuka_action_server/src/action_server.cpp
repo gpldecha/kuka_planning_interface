@@ -1,5 +1,6 @@
 #include "kuka_action_server/action_server.h"
 
+
 namespace asrv {
 
 Action_server::Action_server(ros::NodeHandle& nh,std::string name):
@@ -10,6 +11,8 @@ Action_server::Action_server(ros::NodeHandle& nh,std::string name):
 
     as_sub             = nh.subscribe("/kuka_server/cmd", 10, &Action_server::subscriber_cb,this);
     base_action_server = NULL;
+
+    add_default_actions(nh);
 
 }
 
@@ -95,7 +98,20 @@ void Action_server::subscriber_cb(const std_msgs::String::ConstPtr& msg){
         //as_.setAborted(result_);
         ROS_INFO("cancel current action");
     }
+}
 
+void Action_server::add_default_actions(ros::NodeHandle &nh){
+
+    // Grav Comp actions
+    asrv::Action_j_initialiser action_j_init;
+    action_j_init.action_name = "grav_comp";
+
+    asrv::Action_ee_initialiser action_ee_init;
+    action_ee_init.action_name = "grav_comp";
+
+    ptr_kuka_grav_as =  std::shared_ptr<asrv::Kuka_grav_as>( new  asrv::Kuka_grav_as(nh,action_j_init, action_ee_init) );
+
+    push_back(ptr_kuka_grav_as.get(),"grav_comp");
 
 }
 

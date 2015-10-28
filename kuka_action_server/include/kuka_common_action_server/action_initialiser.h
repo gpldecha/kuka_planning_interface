@@ -1,5 +1,5 @@
-#ifndef ACTION_INITIALISER_H_
-#define ACTION_INITIALISER_H_
+#ifndef KUKA_ACTION_SERVER_ACTION_INITIALISER_H_
+#define KUKA_ACTION_SERVER_ACTION_INITIALISER_H_
 
 #include "kuka_action_server/default_topics.h"
 
