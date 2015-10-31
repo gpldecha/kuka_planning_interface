@@ -18,16 +18,10 @@ Kuka_goto_cart_as::Kuka_goto_cart_as(ros::NodeHandle& nh, const Action_ee_initia
     simulation              = true;
     tf_count                = 0;
     dt                      = 1.0/100.0;
-    default_speed           = 0.05; // [m/s]
+    default_speed           = 0.001; // [m/s]
 }
 
 bool Kuka_goto_cart_as::execute_CB(alib_server& as_,alib_feedback& feedback_,const cptrGoal& goal){
-
-   /* ROS_INFO("Kuka_goto_cart_as::execute_CB");
-    ROS_INFO("action_name : [%s]",goal->action_name.c_str());
-    ROS_INFO("action_type : [%s]",goal->action_type.c_str());
-    ROS_INFO("class action_name : [%s]",action_name.c_str());*/
-
 
     if (action_name == (goal->action_name))
     {
@@ -42,7 +36,6 @@ bool Kuka_goto_cart_as::execute_CB(alib_server& as_,alib_feedback& feedback_,con
 
 bool Kuka_goto_cart_as::goto_cartesian_closed_loop(alib_server& as_,alib_feedback& feedback,const cptrGoal& goal){
 
-  //  ROS_INFO("goto_cartesian_closed_loop");
 
     tf::Transform trans_att;
 
@@ -89,11 +82,8 @@ bool Kuka_goto_cart_as::goto_cartesian_closed_loop(alib_server& as_,alib_feedbac
 
 
     static tf::TransformBroadcaster br;
-  //  tf::Transform trans_ee_target;
-  //  trans_ee_target.setOrigin();
-
-
     ros::Rate loop_rate(rate);
+
     while(ros::ok() && bBaseRun) {
 
         br.sendTransform(tf::StampedTransform(trans_att, ros::Time::now(), world_frame, "ee_final"));
@@ -110,21 +100,8 @@ bool Kuka_goto_cart_as::goto_cartesian_closed_loop(alib_server& as_,alib_feedbac
         speed            = (max_speed * bell_velocity(dist_targ_origin * 100.0,beta,offset));    // convert [m] -> [cm]
         velocity         = speed * velocity.normalize();
 
-        // ROS_INFO("dist %f [m] %f [cm] %f [speed] %f [bell]",dist_targ_origin,dist_targ_origin*100,speed,bell_velocity(dist_targ_origin * 100.0,beta,offset));
-
         des_ee_pose.setOrigin(velocity + current_origin);
-
-       // Quaternion slerp interpolation between start and final orientation
-       // slerp_t =  1 - (dist_targ_origin/max_dist);
-       // ROS_INFO("slerp_t: %f",slerp_t);
-
-       // ROS_INFO("c_q %f %f %f %f",current_orient.w(),current_orient.x(),current_orient.y(),current_orient.z());
-       // ROS_INFO("t_q %f %f %f %f",target_orient.w(),target_orient.x(),target_orient.y(),target_orient.z());
-
         des_ee_pose.setRotation( current_orient.slerp(target_orient, slerp_t)      );
-
-       // ROS_INFO("q: %f %f %f %f",des_ee_pose.getRotation().w(),
-       // des_ee_pose.getRotation().x(),des_ee_pose.getRotation().y(),des_ee_pose.getRotation().z());
 
         dist_targ_target = acos(abs(target_orient.dot(current_orient)));
         sendPose(des_ee_pose);

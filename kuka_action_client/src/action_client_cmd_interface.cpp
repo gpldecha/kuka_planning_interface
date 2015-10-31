@@ -27,8 +27,11 @@ void Action_client_cmd_interface::init_nl_subscriber(std::string topic_name){
 
 void Action_client_cmd_interface::nl_command_callback(const std_msgs::String::ConstPtr& msg){
 
+
+
     std::string action_name = msg->data;
     ROS_INFO("I heard [%s]",action_name.c_str());
+    action_cmd_callback(action_name);
 
 }
 
@@ -37,6 +40,13 @@ bool Action_client_cmd_interface::action_service_callback(kuka_action_client::St
     std::cout<< "Action_client_cmd_interface::service_callback" << std::endl;
 
     std::string action_name         = req.cmd;
+    action_cmd_callback(action_name);
+    res.res = "";
+    return true;
+}
+
+bool Action_client_cmd_interface::action_cmd_callback(const std::string& action_name){
+
     std::string current_action_name = kuka_action_client.current_action_name;
 
     std::cout<< "=== Service call back === " <<                                 std::endl;
@@ -54,8 +64,6 @@ bool Action_client_cmd_interface::action_service_callback(kuka_action_client::St
         kuka_action_client.b_action_running = false;
         worker_thread.join();
     }
-    res.res = "";
-    return true;
 
 }
 

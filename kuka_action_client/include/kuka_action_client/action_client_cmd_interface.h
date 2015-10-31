@@ -36,14 +36,13 @@ private:
 
     void nl_command_callback(const std_msgs::String::ConstPtr &msg);
 
-   // bool service_callback(kuka_action_client::String_cmd::Request& req,kuka_action_client::String_cmd::Response &res);
-
-
 private:
 
     bool action_service_callback(kuka_action_client::String_cmd::Request& req,kuka_action_client::String_cmd::Response &res);
 
     bool cmd_interface_callback(kuka_action_client::String_cmd::Request& req,kuka_action_client::String_cmd::Response &res);
+
+    bool action_cmd_callback(const std::string& action_cmd);
 
     void workThread(std::string action_name);
 
