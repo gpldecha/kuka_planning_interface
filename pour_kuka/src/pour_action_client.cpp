@@ -6,6 +6,7 @@ Create_pour_goals::Create_pour_goals(){
 
     enum{KUKA_DOF = 7};
 
+    std::array<double,KUKA_DOF> des_position;
     std::array<double,KUKA_DOF> des_velocity;
     std::array<double,KUKA_DOF> des_stiffness;
 
@@ -16,17 +17,20 @@ Create_pour_goals::Create_pour_goals(){
     jointStateImpedance.stiffness.resize(KUKA_DOF);
 
 
-    // Pouring Object (i.e. dough/plate/etc)
-    geometry_msgs::Transform fake_object;
-    fake_object.translation.x = 0;
-    fake_object.translation.y = 0;
-    fake_object.translation.z = 0;
-    fake_object.rotation.x    = 0;
-    fake_object.rotation.y    = 0;
-    fake_object.rotation.z    = 0;
-    fake_object.rotation.w    = 1;
 
     {   /// HOME action
+
+        // Pouring Object (i.e. dough/plate/etc)
+        geometry_msgs::Transform fake_object;
+        fake_object.translation.x = 0;
+        fake_object.translation.y = 0;
+        fake_object.translation.z = 0;
+        fake_object.rotation.x    = 0;
+        fake_object.rotation.y    = 0;
+        fake_object.rotation.z    = 0;
+        fake_object.rotation.w    = 1;
+
+
         ac::Goal goal;
         goal.action_type = "LEARNED_MODEL";
         goal.object_frame         = fake_object;
@@ -48,6 +52,17 @@ Create_pour_goals::Create_pour_goals(){
     }
 
     {   /// Pouring Phase Attractor
+
+        // Pouring Object (i.e. dough/plate/etc)
+        geometry_msgs::Transform fake_object;
+        fake_object.translation.x = 0;
+        fake_object.translation.y = 0;
+        fake_object.translation.z = 0;
+        fake_object.rotation.x    = 0;
+        fake_object.rotation.y    = 0;
+        fake_object.rotation.z    = 0;
+        fake_object.rotation.w    = 1;
+
         ac::Goal goal;
         goal.action_type = "LEARNED_MODEL";
         goal.object_frame         = fake_object;
@@ -67,6 +82,17 @@ Create_pour_goals::Create_pour_goals(){
     }
 
     {   /// Back Phase attractor
+
+        // Pouring Object (i.e. dough/plate/etc)
+        geometry_msgs::Transform fake_object;
+        fake_object.translation.x = 0;
+        fake_object.translation.y = 0;
+        fake_object.translation.z = 0;
+        fake_object.rotation.x    = 0;
+        fake_object.rotation.y    = 0;
+        fake_object.rotation.z    = 0;
+        fake_object.rotation.w    = 1;
+
         ac::Goal goal;
         goal.action_type = "LEARNED_MODEL";
         goal.object_frame         = fake_object;
@@ -83,6 +109,20 @@ Create_pour_goals::Create_pour_goals(){
         goal.action_name        = "back";
         goal.attractor_frame    = back_attr;
         pour_goals[goal.action_name] = goal;
+    }
+
+
+    // Go to a target joint configuration
+    {
+        ac::Goal goal;
+        des_position  =  {{-0.293507303216,-0.268253,0.115399,-1.777066, 0.96409, 1.517602, -2.773258}};
+
+        for(std::size_t i = 0; i < KUKA_DOF;i++)
+            jointStateImpedance.position[i]      = des_position[i];
+
+        goal.action_name            = "goto_joint";
+        goal.JointStateImpedance    = jointStateImpedance;
+        pour_goals["goto_home"]          = goal;
     }
 
 

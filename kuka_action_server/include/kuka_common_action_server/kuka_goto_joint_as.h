@@ -23,6 +23,7 @@ private:
     Eigen::VectorXd joint_current_pos;
     Eigen::VectorXd joint_direction_pos;
     Eigen::VectorXd des_j_pose;
+    Eigen::VectorXd des_j_stiffness;
 
 };
 

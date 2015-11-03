@@ -23,16 +23,6 @@ Base_j_action::Base_j_action(ros::NodeHandle &nh,
     j_effort.resize(KUKA_NUM_JOINTS);
     j_stiffness.resize(KUKA_NUM_JOINTS);
 
-    ///-- Joint Commands --//
-    j_state.position.resize(KUKA_NUM_JOINTS);
-    j_state.velocity.resize(KUKA_NUM_JOINTS);
-
-    ///-- Joint Impedance Commands --//
-    j_state_imp.position.resize(KUKA_NUM_JOINTS);
-    j_state_imp.velocity.resize(KUKA_NUM_JOINTS);
-    j_state_imp.stiffness.resize(KUKA_NUM_JOINTS);
-
-
 }
 
 void Base_j_action::jStateCallback(const sensor_msgs::JointStateConstPtr& msg) {
@@ -68,33 +58,34 @@ void Base_j_action::jStateImpedanceCallback(const kuka_fri_bridge::JointStateImp
 
 void Base_j_action::setJointPos(const Eigen::VectorXd& j_pose){
     assert(j_pose.size() == KUKA_NUM_JOINTS);
-    for(std::size_t i = 0; i < KUKA_NUM_JOINTS;i++){
-        j_state.position[i] = j_pose[i];
-        j_state.velocity[i] = 0;
 
-    }
+    j_state.position.resize(KUKA_NUM_JOINTS);
+    j_state.velocity.resize(0);
+    for(std::size_t i = 0; i < KUKA_NUM_JOINTS;i++)
+        j_state.position[i] = j_pose[i];
+
 }
 
 void Base_j_action::setJointVel(const Eigen::VectorXd& j_vel){
     assert(j_vel.size() == KUKA_NUM_JOINTS);
-    for(std::size_t i = 0; i < KUKA_NUM_JOINTS;i++){
 
-        j_state.position[i] = 0;
+    j_state.position.resize(0);
+    j_state.velocity.resize(KUKA_NUM_JOINTS);
+    for(std::size_t i = 0; i < KUKA_NUM_JOINTS;i++)
         j_state.velocity[i] = j_vel[i];
-
-    }
-
 }
 
 void Base_j_action::sendJointState(){
     sensor_msgs::JointState j_msg;
-    j_msg.position.resize(KUKA_NUM_JOINTS);
-    j_msg.velocity.resize(KUKA_NUM_JOINTS);
 
-    for(std::size_t i = 0; i < KUKA_NUM_JOINTS;i++){
+    j_msg.position.resize(j_state.position.size());
+    j_msg.velocity.resize(j_state.velocity.size());
+
+    for(std::size_t i = 0; i < j_state.position.size();i++)
         j_msg.position[i] = j_state.position[i];
+
+    for(std::size_t i = 0; i < j_state.position.size();i++)
         j_msg.velocity[i] = j_state.velocity[i];
-    }
 
     pub.publish(j_msg);
 
@@ -102,23 +93,31 @@ void Base_j_action::sendJointState(){
 
 
 void Base_j_action::sendJointImpedance(const Eigen::VectorXd& j_stiff){
+
     assert(j_stiff.size() == KUKA_NUM_JOINTS);
 
     kuka_fri_bridge::JointStateImpedance j_imp_msg;
-    j_imp_msg.position.resize(KUKA_NUM_JOINTS);
-    j_imp_msg.velocity.resize(KUKA_NUM_JOINTS);
+    j_imp_msg.position.resize(j_state.position.size());
+    j_imp_msg.velocity.resize(j_state.velocity.size());
     j_imp_msg.stiffness.resize(KUKA_NUM_JOINTS);
 
-    for(std::size_t i = 0; i < KUKA_NUM_JOINTS;i++){
-        j_state_imp.position[i] = j_state.position[i];
-        j_state_imp.velocity[i] = j_state.velocity[i];
-        j_state_imp.stiffness[i] = j_stiff[i];
+    if (j_state.position.size() == KUKA_NUM_JOINTS){
 
-        j_imp_msg.position[i] = j_state_imp.position[i];
-        j_imp_msg.velocity[i] = j_state_imp.velocity[i];
-        j_imp_msg.stiffness[i] = j_state_imp.stiffness[i];
+        for(std::size_t i = 0; i < KUKA_NUM_JOINTS;i++){
+            j_imp_msg.position[i] = j_state.position[i];
+            j_imp_msg.stiffness[i] = j_stiff[i];
+        }
+
     }
+    else{
 
+        for(std::size_t i = 0; i < KUKA_NUM_JOINTS;i++){
+            j_imp_msg.velocity[i] = j_state.velocity[i];
+            j_imp_msg.stiffness[i] = j_stiff[i];
+        }
+
+
+    }
 
     pub_imp.publish(j_imp_msg);
 

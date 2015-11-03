@@ -29,13 +29,13 @@ bool Kuka_goto_joint_as::execute_CB(alib_server& as_,alib_feedback& feedback_,co
         std::cout<< "- 1 -" << std::endl;
 
 
-        joint_target_pos[0] =  goal->JointState.position[0];
-        joint_target_pos[1] =  goal->JointState.position[1];
-        joint_target_pos[2] =  goal->JointState.position[2];
-        joint_target_pos[3] =  goal->JointState.position[3];
-        joint_target_pos[4] =  goal->JointState.position[4];
-        joint_target_pos[5] =  goal->JointState.position[5];
-        joint_target_pos[6] =  goal->JointState.position[6];
+        joint_target_pos[0] =  goal->JointStateImpedance.position[0];
+        joint_target_pos[1] =  goal->JointStateImpedance.position[1];
+        joint_target_pos[2] =  goal->JointStateImpedance.position[2];
+        joint_target_pos[3] =  goal->JointStateImpedance.position[3];
+        joint_target_pos[4] =  goal->JointStateImpedance.position[4];
+        joint_target_pos[5] =  goal->JointStateImpedance.position[5];
+        joint_target_pos[6] =  goal->JointStateImpedance.position[6];
 
 
         std::cout<< "- 2 -" << std::endl;
@@ -51,6 +51,9 @@ bool Kuka_goto_joint_as::execute_CB(alib_server& as_,alib_feedback& feedback_,co
         }
 
         double dist_target = 1;
+
+        // Get current joint stiffness
+
 
 
         ros::Duration loop_rate(model_dt);
@@ -71,9 +74,10 @@ bool Kuka_goto_joint_as::execute_CB(alib_server& as_,alib_feedback& feedback_,co
            // set target joint position
             setJointPos(joint_target_pos);
 
+           // send target joint position + current joint stiffness
+            sendJointImpedance(j_stiffness);
 
             loop_rate.sleep();
-
 
         }
 
