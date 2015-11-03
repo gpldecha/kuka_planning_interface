@@ -12,14 +12,36 @@ Kuka_goto_joint_as::Kuka_goto_joint_as(ros::NodeHandle&  nh,const Action_j_initi
 {
     action_name = init.action_name;
     model_dt    = init.model_dt;
+    joint_target_pos.resize(7);
+    joint_current_pos.resize(7);
+    joint_direction_pos.resize(7);
+    des_j_pose.resize(7);
 
 }
 
 bool Kuka_goto_joint_as::execute_CB(alib_server& as_,alib_feedback& feedback_,const cptrGoal& goal){
 
+    std::cout<< "Kuka_goto_joint_as::execute_CB" << std::endl;
+
+
     if (action_name == (goal->action_name))
     {
+        std::cout<< "- 1 -" << std::endl;
 
+
+        joint_target_pos[0] =  goal->JointState.position[0];
+        joint_target_pos[1] =  goal->JointState.position[1];
+        joint_target_pos[2] =  goal->JointState.position[2];
+        joint_target_pos[3] =  goal->JointState.position[3];
+        joint_target_pos[4] =  goal->JointState.position[4];
+        joint_target_pos[5] =  goal->JointState.position[5];
+        joint_target_pos[6] =  goal->JointState.position[6];
+
+
+        std::cout<< "- 2 -" << std::endl;
+
+
+        joint_current_pos = j_pose;
 
         ROS_INFO("Execution started");
         if (bBaseRun){
@@ -28,36 +50,40 @@ bool Kuka_goto_joint_as::execute_CB(alib_server& as_,alib_feedback& feedback_,co
             std::cout<< "bRun: FALSE " << std::endl;
         }
 
+        double dist_target = 1;
+
+
         ros::Duration loop_rate(model_dt);
         while(ros::ok() && bBaseRun) {
 
 
+            joint_current_pos   = j_pose;
+            joint_direction_pos = (joint_target_pos - joint_current_pos);
 
-        /*    feedback_.progress = prog_curr;
-            as_.publishFeedback(feedback_);
-            if (as_.isPreemptRequested() || !ros::ok())
-            {
-                ROS_INFO("Preempted");
-                as_.setPreempted();
-                bBaseRun = false;
-                break;
-            }
+            ROS_INFO("current: %f %f %f %f %f %f %f",joint_current_pos[0],joint_current_pos[1],joint_current_pos[2],joint_current_pos[3],joint_current_pos[4],joint_current_pos[5],joint_current_pos[6]);
+            ROS_INFO("target:  %f %f %f %f %f %f %f",joint_target_pos[0],joint_target_pos[1],joint_target_pos[2],joint_target_pos[3],joint_target_pos[4],joint_target_pos[5],joint_target_pos[6]);
+            ROS_INFO("direct:  %f %f %f %f %f %f %f",joint_direction_pos[0],joint_direction_pos[1],joint_direction_pos[2],joint_direction_pos[3],joint_direction_pos[4],joint_direction_pos[5],joint_direction_pos[6]);
+            ROS_INFO(" ");
+
+            dist_target = joint_direction_pos.norm();
 
 
-            if(pos_err < reachingThreshold && (ori_err < orientationThreshold || std::isnan(ori_err))) {
-                break;
-            }
-             */
+           // set target joint position
+            setJointPos(joint_target_pos);
+
+
             loop_rate.sleep();
 
-        }
 
+        }
 
         if(!bBaseRun){
              return false;
         }else{
              return true;
         }
+
+
     }else{
         std::string msg;
         msg = "Kuka_goto_cart_as::execute_CB: wrong action call, requested: " + goal->action_name + " actual: " + action_name;

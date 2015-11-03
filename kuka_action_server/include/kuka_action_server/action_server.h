@@ -29,6 +29,7 @@
 #include "kuka_action_server/default_types.h"
 
 #include "kuka_common_action_server/kuka_grav_as.h"
+#include "kuka_common_action_server/kuka_goto_joint_as.h"
 
 #include <memory>
 
@@ -101,6 +102,7 @@ private:
 
     // Default actions made available to the user
     std::shared_ptr<asrv::Kuka_grav_as>                 ptr_kuka_grav_as;
+    std::shared_ptr<asrv::Kuka_goto_joint_as>           ptr_kuka_goto_joint_as;
 
 };
 

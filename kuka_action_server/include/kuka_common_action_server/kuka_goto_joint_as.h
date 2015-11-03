@@ -17,8 +17,12 @@ public:
 
 private:
 
-    std::string action_name;
-    double      model_dt;
+    std::string     action_name;
+    double          model_dt;
+    Eigen::VectorXd joint_target_pos;
+    Eigen::VectorXd joint_current_pos;
+    Eigen::VectorXd joint_direction_pos;
+    Eigen::VectorXd des_j_pose;
 
 };
 
