@@ -160,7 +160,7 @@ void Kuka_action_client::add_default_actions(){
     {
         ac::Goal goal;
         des_velocity  =  {{0,0,0,0,0,0,0}};
-        des_stiffness =  {{0,0,0,0,0,1000,0}};
+        des_stiffness =  {{0,0,0,0,0,1500,0}};
 
         for(std::size_t i = 0; i < KUKA_DOF;i++){
             jointStateImpedance.velocity[i]      = des_velocity[i];
@@ -177,7 +177,7 @@ void Kuka_action_client::add_default_actions(){
     {
         ac::Goal goal;
         des_velocity  =  {{0,0,0,0,0,0,0}};
-        des_stiffness =  {{0,0,0,0,1000,1000,0}};
+        des_stiffness =  {{0,0,0,0,2000,2000,0}};
 
         for(std::size_t i = 0; i < KUKA_DOF;i++){
             jointStateImpedance.velocity[i]      = des_velocity[i];
@@ -194,7 +194,7 @@ void Kuka_action_client::add_default_actions(){
     {
         ac::Goal goal;
         des_velocity  =  {{0,0,0,0,0,0,0}};
-        des_stiffness =  {{0,0,0,0,0,0,1000}};
+        des_stiffness =  {{0,0,0,0,0,0,1500}};
 
         for(std::size_t i = 0; i < KUKA_DOF;i++){
             jointStateImpedance.velocity[i]      = des_velocity[i];

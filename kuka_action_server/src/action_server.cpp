@@ -117,12 +117,15 @@ void Action_server::add_default_actions(ros::NodeHandle &nh){
 
     // Goto joint cartesian
     {
-     asrv::Action_j_initialiser action_j_init;
-     action_j_init.action_name = "goto_joint";
-     ptr_kuka_goto_joint_as = std::shared_ptr<asrv::Kuka_goto_joint_as>(new asrv::Kuka_goto_joint_as(nh,action_j_init));
-     push_back(ptr_kuka_goto_joint_as.get(),"goto_joint");
+         asrv::Action_j_initialiser action_j_init;
+         action_j_init.action_name = "goto_joint";
 
 
+         asrv::Action_ee_initialiser action_ee_init;
+         action_ee_init.action_name = "goto_joint";
+
+         ptr_kuka_goto_joint_as = std::shared_ptr<asrv::Kuka_goto_joint_as>(new asrv::Kuka_goto_joint_as(nh,action_j_init,action_ee_init));
+         push_back(ptr_kuka_goto_joint_as.get(),"goto_joint");
 
     }
 

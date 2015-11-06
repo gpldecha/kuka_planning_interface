@@ -63,13 +63,14 @@ public:
         j_cmd_pos_topic     = topics::J_CMD_POSE_TOPIC;
         j_imp_topic         = topics::J_IMP_STATE_TOPIC;
         j_imp_cmd_topic     = topics::J_IMP_CMD_TOPIC;
+        j_action_topic      = topics::J_ACTION_TOPIC;
     }
 
     std::string j_state_pose_topic;
     std::string j_cmd_pos_topic;
     std::string j_imp_topic;
     std::string j_imp_cmd_topic;
-
+    std::string j_action_topic;
 };
 
 }

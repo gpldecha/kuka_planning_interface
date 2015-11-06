@@ -20,7 +20,7 @@ public:
     static const std::string J_IMP_STATE_TOPIC;
     static const std::string J_CMD_POSE_TOPIC;
     static const std::string J_IMP_CMD_TOPIC;
-
+    static const std::string J_ACTION_TOPIC;
 };
 
 }

@@ -7,18 +7,22 @@ Base_j_action::Base_j_action(ros::NodeHandle &nh,
                              const std::string &j_state_pose_topic,
                              const std::string &j_cmd_pos_topic,
                              const std::string &j_state_imp_topic,
-                             const std::string &j_imp_cmd_topic)
+                             const std::string &j_imp_cmd_topic,
+                             const std::string &j_action_topic)
 {
     ///-- For Standard Msg Joint State --//
     sub = nh.subscribe<sensor_msgs::JointState>(j_state_pose_topic,1,&Base_j_action::jStateCallback,this);
     pub = nh.advertise<sensor_msgs::JointState>(j_cmd_pos_topic,1);
+
+    ///-- Publish Boolean message that Joint Action is on --///
+    pub_ja = nh.advertise<std_msgs::Bool>(j_action_topic,1);
 
     ///-- For Custom Msg Joint State Impedance --//
     sub_imp = nh.subscribe<kuka_fri_bridge::JointStateImpedance>(j_state_imp_topic,1,&Base_j_action::jStateImpedanceCallback,this);
     pub_imp = nh.advertise<kuka_fri_bridge::JointStateImpedance>(j_imp_cmd_topic,1);
 
     ///-- Joint States --//
-    j_pose.resize(KUKA_NUM_JOINTS);
+    j_position.resize(KUKA_NUM_JOINTS);
     j_velocity.resize(KUKA_NUM_JOINTS);
     j_effort.resize(KUKA_NUM_JOINTS);
     j_stiffness.resize(KUKA_NUM_JOINTS);
@@ -33,9 +37,9 @@ void Base_j_action::jStateCallback(const sensor_msgs::JointStateConstPtr& msg) {
      assert(data->effort.size()   == 7);
 
      for(std::size_t i = 0; i < KUKA_NUM_JOINTS;i++){
-         j_pose(i)      = data->position[i];
-         j_velocity(i)  = data->velocity[i];
-         j_effort(i)    = data->effort[i];
+         j_position(i)      = data->position[i];
+         j_velocity(i)      = data->velocity[i];
+         j_effort(i)        = data->effort[i];
      }
 }
 
@@ -48,10 +52,10 @@ void Base_j_action::jStateImpedanceCallback(const kuka_fri_bridge::JointStateImp
      assert(data->effort.size()   == 7);
 
      for(std::size_t i = 0; i < KUKA_NUM_JOINTS;i++){
-         j_pose(i)      = data->position[i];
-         j_velocity(i)  = data->velocity[i];
-         j_effort(i)    = data->effort[i];
-         j_stiffness(i) = data->stiffness[i];
+         j_position(i)      = data->position[i];
+         j_velocity(i)      = data->velocity[i];
+         j_effort(i)        = data->effort[i];
+         j_stiffness(i)     = data->stiffness[i];
      }
 
 }
@@ -119,6 +123,12 @@ void Base_j_action::sendJointImpedance(const Eigen::VectorXd& j_stiff){
 
     }
 
+    ///-- Publish joint action message --//
+    std_msgs::Bool j_action_msg;
+    j_action_msg.data = true;
+    pub_ja.publish(j_action_msg);
+
+    ///-- Publish joint command --//
     pub_imp.publish(j_imp_msg);
 
 }

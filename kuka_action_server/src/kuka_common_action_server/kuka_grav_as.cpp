@@ -14,7 +14,8 @@ Kuka_grav_as::Kuka_grav_as(ros::NodeHandle&  nh,
                    init.j_state_pose_topic,
                    init.j_cmd_pos_topic,
                    init.j_imp_topic,
-                   init.j_imp_cmd_topic),
+                   init.j_imp_cmd_topic,
+                   init.j_action_topic),
      Base_ee_action(nh,
                    action_ee_init.ee_state_pos_topic,
                    action_ee_init.ee_cmd_pos_topic,
@@ -66,8 +67,7 @@ bool Kuka_grav_as::execute_CB(alib_server& as_,alib_feedback& feedback_,const cp
 
         while(ros::ok() && bBaseRun) {
 
-
-            //---  Update Cartesian Pose fro (cart_to_joint) everytime you go into interactive grav_comp
+            //---  Update Cartesian Pose for (cart_to_joint) everytime you go into interactive grav_comp
             //---  Send /cart_to_joint/des_ee_pos  as the current ee_pose
             tf::TransformListener listener;
             tf::StampedTransform curr_ee_tf_;
@@ -103,6 +103,12 @@ bool Kuka_grav_as::execute_CB(alib_server& as_,alib_feedback& feedback_,const cp
             ROS_INFO_STREAM("Current error to desired stiffness: " << stiff_err);
             if(stiff_err < 0.5){
                 ROS_INFO_STREAM('Desired Stiffness REACHED, you can manipulate the robot now...');
+
+                ///-- Publish joint action message (for cart_to_joint) --//
+                std_msgs::Bool j_action_msg;
+                j_action_msg.data = false;
+                pub_ja.publish(j_action_msg);
+
                 return true;
             }
             loop_rate.sleep();

@@ -3,6 +3,7 @@
 
 #include <ros/ros.h>
 #include <sensor_msgs/JointState.h>
+#include <std_msgs/Bool.h>
 #include <kuka_fri_bridge/JointStateImpedance.h>
 
 #include <Eigen/Core>
@@ -22,7 +23,8 @@ public:
                   const std::string& j_state_pose_topic,
                   const std::string& j_cmd_pos_topic,
                   const std::string& j_state_imp_topic,
-                  const std::string& j_imp_cmd_topic
+                  const std::string& j_imp_cmd_topic,
+                  const std::string& j_action_topic
                   );
 
 
@@ -42,6 +44,7 @@ public:
 
     ros::Subscriber                         sub;
     ros::Publisher                          pub;
+    ros::Publisher                          pub_ja;
 
     ros::Subscriber                         sub_imp;
     ros::Publisher                          pub_imp;
@@ -49,7 +52,7 @@ public:
     sensor_msgs::JointState                 j_state;
     kuka_fri_bridge::JointStateImpedance    j_state_imp;
 
-    Eigen::VectorXd                         j_pose;
+    Eigen::VectorXd                         j_position;
     Eigen::VectorXd                         j_velocity;
     Eigen::VectorXd                         j_effort;
     Eigen::VectorXd                         j_stiffness;
