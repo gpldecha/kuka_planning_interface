@@ -38,11 +38,11 @@ bool Kuka_grav_as::execute_CB(alib_server& as_,alib_feedback& feedback_,const cp
                 goal->JointStateImpedance.stiffness[3],goal->JointStateImpedance.stiffness[4],
                 goal->JointStateImpedance.stiffness[5],goal->JointStateImpedance.stiffness[6]);
 
-        if (bBaseRun){
+        /*if (bBaseRun){
             std::cout<< "bRun: TRUE " << std::endl;
         }else{
             std::cout<< "bRun: FALSE " << std::endl;
-        }
+        }*/
 
         ///--- Desired Joint Impedance Command--///
         des_j_pose.resize(7);
@@ -65,7 +65,7 @@ bool Kuka_grav_as::execute_CB(alib_server& as_,alib_feedback& feedback_,const cp
         ///--- Desired Loop Rate Command--///
         ros::Duration loop_rate(goal->dt);
 
-        while(ros::ok() && bBaseRun) {
+        while(ros::ok() /*&& bBaseRun*/) {
 
             //---  Update Cartesian Pose for (cart_to_joint) everytime you go into interactive grav_comp
             //---  Send /cart_to_joint/des_ee_pos  as the current ee_pose
@@ -111,15 +111,26 @@ bool Kuka_grav_as::execute_CB(alib_server& as_,alib_feedback& feedback_,const cp
 
                 return true;
             }
+
+            if (as_.isPreemptRequested() || !ros::ok())
+            {
+                ROS_INFO("Preempted");
+                as_.setPreempted();
+               // bBaseRun = false;
+                break;
+            }
+
             loop_rate.sleep();
 
         }
 
-        if(!bBaseRun){
+        return true;
+
+      /*  if(!bBaseRun){
              return false;
         }else{
              return true;
-        }
+        }*/
     }else{
         std::string msg;
         msg = "Kuka_goto_cart_as::execute_CB: wrong action call, requested: " + goal->action_name + " actual: " + action_name;

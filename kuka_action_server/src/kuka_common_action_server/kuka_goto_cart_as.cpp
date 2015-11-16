@@ -37,6 +37,8 @@ bool Kuka_goto_cart_as::execute_CB(alib_server& as_,alib_feedback& feedback_,con
 bool Kuka_goto_cart_as::goto_cartesian_closed_loop(alib_server& as_,alib_feedback& feedback,const cptrGoal& goal){
 
 
+
+
     tf::Transform trans_att;
 
     trans_att.setRotation(tf::Quaternion(goal->attractor_frame.rotation.x,goal->attractor_frame.rotation.y,
@@ -84,7 +86,9 @@ bool Kuka_goto_cart_as::goto_cartesian_closed_loop(alib_server& as_,alib_feedbac
     static tf::TransformBroadcaster br;
     ros::Rate loop_rate(rate);
 
-    while(ros::ok() && bBaseRun) {
+    bool success = true;
+
+    while(ros::ok() /*&& bBaseRun*/) {
 
         br.sendTransform(tf::StampedTransform(trans_att, ros::Time::now(), world_frame, "ee_final"));
 
@@ -106,13 +110,13 @@ bool Kuka_goto_cart_as::goto_cartesian_closed_loop(alib_server& as_,alib_feedbac
         dist_targ_target = acos(abs(target_orient.dot(current_orient)));
         sendPose(des_ee_pose);
 
-        feedback.progress = 0;
+        feedback.progress = dist_targ_target;
         as_.publishFeedback(feedback);
         if (as_.isPreemptRequested() || !ros::ok())
         {
             ROS_INFO("Preempted");
             as_.setPreempted();
-            bBaseRun = false;
+            success = false;
             break;
         }
 
@@ -129,65 +133,10 @@ bool Kuka_goto_cart_as::goto_cartesian_closed_loop(alib_server& as_,alib_feedbac
         prev_orient_error = dist_targ_target; //[rad]
         loop_rate.sleep();
     }
-    if(!bBaseRun){
-        return false;
-    }else{
-        return true;
-    }
+
+    return success;
 }
 
-/*
-bool Kuka_goto_cart_as::goto_cartesian_open_loop(alib_server& as_,alib_feedback& feedback,const cptrGoal& goal){
-
-    tf::Transform trans_att;
-
-    trans_att.setRotation(tf::Quaternion(goal->attractor_frame.rotation.x,goal->attractor_frame.rotation.y,
-                                         goal->attractor_frame.rotation.z,goal->attractor_frame.rotation.w));
-    trans_att.setOrigin(tf::Vector3(goal->attractor_frame.translation.x, goal->attractor_frame.translation.y,
-                                    goal->attractor_frame.translation.z));
-
-    tf::Quaternion final_orient = trans_att.getRotation();
-    tf::Vector3    final_pos    = trans_att.getOrigin();
-
-    tf::Vector3    start_pos    = ee_pose.getOrigin();
-    tf::Quaternion start_orient = ee_pose.getRotation();
-
-    double total_time = 2;
-    double rate = 100,t=0;
-    ros::Rate loop_rate(rate);
-    while(ros::ok() && bBaseRun) {
-
-        // Linear interpolation between start and final position
-        des_ee_pose.setOrigin(  (1-t/total_time)*start_pos + t/total_time*final_pos  );
-
-        // Quaternion slerp interpolation between start and final orientation
-        des_ee_pose.setRotation( start_orient.slerp(final_orient, t/total_time)      );
-
-        t+= 1.0/rate;
-
-        sendPose(des_ee_pose);
-
-        feedback.progress = t;
-        as_.publishFeedback(feedback);
-        if (as_.isPreemptRequested() || !ros::ok())
-        {
-            ROS_INFO("Preempted");
-            as_.setPreempted();
-            bBaseRun = false;
-            break;
-        }
-
-        if(t <= total_time){
-            break;
-        }
-        loop_rate.sleep();
-    }
-    if(!bBaseRun){
-        return false;
-    }else{
-        return true;
-    }
-}*/
 
 
 

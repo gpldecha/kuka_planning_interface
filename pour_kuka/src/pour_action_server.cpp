@@ -126,15 +126,16 @@ bool Pour_action_server::learned_model_execution(PouringPhase                pha
     pos_err = 0; ori_err = 0; prog_curr = 0;
 
     ROS_INFO("Execution started");
-    if (bBaseRun){
+    /*if (bBaseRun){
         std::cout<< "bRun: TRUE " << std::endl;
     }else{
         std::cout<< "bRun: FALSE " << std::endl;
-    }
+    }*/
 
 
+    bool success = true;
     static tf::TransformBroadcaster br;
-    while(ros::ok() && bBaseRun) {
+    while(ros::ok() /*&& bBaseRun*/) {
         if (initial_config == true)
             curr_ee_pose = ee_pose;
         else
@@ -209,7 +210,8 @@ bool Pour_action_server::learned_model_execution(PouringPhase                pha
             ROS_INFO("Preempted");
             // set the action state to preempted
             as_.setPreempted();
-            bBaseRun = false;
+            success=false;
+           // bBaseRun = false;
             break;
         }
 
@@ -221,7 +223,7 @@ bool Pour_action_server::learned_model_execution(PouringPhase                pha
 
     delete cdsRun;
 
-    if(!bBaseRun){
+   /* if(!bBaseRun){
          ROS_INFO("!baseRun");
        //  as_.
        //  as_.shutdown();
@@ -231,7 +233,8 @@ bool Pour_action_server::learned_model_execution(PouringPhase                pha
          return false;
     }else{
          return true;
-    }
+    }*/
+    return success;
 
 }
 

@@ -24,7 +24,7 @@ catkin_package(
    INCLUDE_DIRS include
    LIBRARIES ${PROJECT_NAME}
    CATKIN_DEPENDS roscpp tf std_msgs message_runtime
-    DEPENDS system_lib
+   DEPENDS system_lib
 )
 
 set(INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/include)
@@ -39,8 +39,10 @@ set(H_FILES     ${INCLUDE_DIR}/kuka_action_client/kuka_action_client.h
 set(SRC_FILES   ${SRC_DIR}/kuka_action_client.cpp
                 ${SRC_DIR}/action_client_cmd_interface.cpp)
 
+
 add_library(${PROJECT_NAME} ${H_FILES} ${SRC_FILES})
 target_link_libraries(${PROJECT_NAME} ${catkin_LIBRARIES})
 
 
+add_dependencies(${PROJECT_NAME} ${PROJECT_NAME}_generate_messages_cpp ${catkin_EXPORTED_TARGETS})
 

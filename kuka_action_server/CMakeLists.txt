@@ -51,3 +51,4 @@ set(SRC_FILES   ${SRC_DIR}/base_ee_action.cpp
 add_library(${PROJECT_NAME} SHARED ${H_FILES} ${SRC_FILES})
 target_link_libraries(${PROJECT_NAME}  ${catkin_LIBRARIES} )
 
+add_dependencies(${PROJECT_NAME} ${catkin_EXPORTED_TARGETS})

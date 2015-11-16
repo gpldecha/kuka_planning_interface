@@ -9,7 +9,7 @@ Action_server::Action_server(ros::NodeHandle& nh,std::string name):
 {
     as_.start();
 
-    as_sub             = nh.subscribe("/kuka_server/cmd", 10, &Action_server::subscriber_cb,this);
+  //  as_sub             = nh.subscribe("/kuka_server/cmd", 10, &Action_server::subscriber_cb,this);
     base_action_server = NULL;
 
     add_default_actions(nh);
@@ -60,25 +60,27 @@ void Action_server::executeCB(const cptrGoal& goal){
     }else{
 
         base_action_server = actions_it->second;
-        base_action_server->bBaseRun = true;
+       // base_action_server->bBaseRun = true;
         ROS_INFO("before base_action_server");
         bool success                 = base_action_server->execute_CB(as_,feedback_,goal);
         ROS_INFO("after base_action_server");
 
 
         result_.success = success;
+
         if(success)
         {
             ROS_INFO("%s: Succeeded", action_name_.c_str());
             as_.setSucceeded(result_);
         } else {
             ROS_INFO("%s: Failed", action_name_.c_str());
-          //  as_.setAborted(result_);
+            as_.setPreempted(result_);
+           // as_.setAborted(result_);
         }
     }
 }
 
-
+/*
 void Action_server::subscriber_cb(const std_msgs::String::ConstPtr& msg){
 
     std::string cmd = msg->data.c_str();
@@ -99,7 +101,7 @@ void Action_server::subscriber_cb(const std_msgs::String::ConstPtr& msg){
         ROS_INFO("cancel current action");
     }
 }
-
+*/
 void Action_server::add_default_actions(ros::NodeHandle &nh){
 
     // Grav Comp actions

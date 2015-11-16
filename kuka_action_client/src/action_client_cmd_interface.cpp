@@ -16,7 +16,7 @@ Action_client_cmd_interface::Action_client_cmd_interface(ros::NodeHandle    &nh,
     action_service             = nh.advertiseService(action_service_name,&Action_client_cmd_interface::action_service_callback,this);
     cmd_interface_service      = nh.advertiseService(cmd_service_name,&Action_client_cmd_interface::cmd_interface_callback,this);
 
-    action_server_pub   = nh.advertise<std_msgs::String>("/kuka_server/cmd",10);
+  //  action_server_pub   = nh.advertise<std_msgs::String>("/kuka_server/cmd",10);
 
 
 }
@@ -45,7 +45,7 @@ bool Action_client_cmd_interface::action_service_callback(kuka_action_client::St
     return true;
 }
 
-bool Action_client_cmd_interface::action_cmd_callback(const std::string& action_name){
+void Action_client_cmd_interface::action_cmd_callback(const std::string& action_name){
 
     std::string current_action_name = kuka_action_client.current_action_name;
 
@@ -55,22 +55,17 @@ bool Action_client_cmd_interface::action_cmd_callback(const std::string& action_
 
    if(!kuka_action_client.b_action_running){
     std::cout<< " start action:          "   << action_name << std::endl;
-        worker_thread = boost::thread(&Action_client_cmd_interface::workThread,this,action_name);
+        boost::thread( boost::bind( &ac::Kuka_action_client::call_action, boost::ref(kuka_action_client),action_name ) );
     }else{
         kuka_action_client.ac_.cancelAllGoals();
-        server_msg.data = "cancel";
-        action_server_pub.publish(server_msg);
-        ros::spinOnce();
+       // server_msg.data = "cancel";
+       // action_server_pub.publish(server_msg);
+       // ros::spinOnce();
         kuka_action_client.b_action_running = false;
         worker_thread.join();
     }
 
 }
-
-void Action_client_cmd_interface::workThread(std::string action_name){
-    kuka_action_client.call_action(action_name);
-}
-
 
 bool Action_client_cmd_interface::cmd_interface_callback(kuka_action_client::String_cmd::Request& req,kuka_action_client::String_cmd::Response &res){
 

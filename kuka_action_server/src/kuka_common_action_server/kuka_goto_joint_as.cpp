@@ -55,11 +55,11 @@ bool Kuka_goto_joint_as::execute_CB(alib_server& as_,alib_feedback& feedback_,co
 
 
         ROS_INFO("Execution started");
-        if (bBaseRun){
+        /*if (bBaseRun){
             std::cout<< "bRun: TRUE " << std::endl;
         }else{
             std::cout<< "bRun: FALSE " << std::endl;
-        }
+        }*/
 
         double dist_target(1);
         double max_speed (0.5);
@@ -69,7 +69,7 @@ bool Kuka_goto_joint_as::execute_CB(alib_server& as_,alib_feedback& feedback_,co
         double running_time (0.0);
 
         ros::Duration loop_rate(dt);
-        while(ros::ok() && bBaseRun) {
+        while(ros::ok()/* && bBaseRun*/) {
 
 
             joint_position_error = (joint_target_pos - j_position);
@@ -139,16 +139,27 @@ bool Kuka_goto_joint_as::execute_CB(alib_server& as_,alib_feedback& feedback_,co
                 return true;
             }
 
+            if (as_.isPreemptRequested() || !ros::ok())
+            {
+                ROS_INFO("Preempted");
+                as_.setPreempted();
+               // bBaseRun = false;
+                break;
+            }
+
+
             running_time+=dt;
             loop_rate.sleep();
 
         }
 
-        if(!bBaseRun){
+        return true;
+
+       /* if(!bBaseRun){
              return false;
         }else{
              return true;
-        }
+        }*/
 
 
     }else{

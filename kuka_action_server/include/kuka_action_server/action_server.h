@@ -89,7 +89,7 @@ private:
     // create messages that are used to published feedback/result
     alib_feedback                       feedback_;
     alib_result                         result_;
-    ros::Subscriber                     as_sub;
+   // ros::Subscriber                     as_sub;
 
     Base_action_server*                                 base_action_server;
 

@@ -39,6 +39,9 @@ bool Kuka_action_client::call_action(const std::string& name){
         ac_.sendGoal(it->second);
         ac_.waitForResult();
 
+
+
+
         actionlib::SimpleClientGoalState state = ac_.getState();
 
         ROS_INFO("Action finished: %s",state.toString().c_str());

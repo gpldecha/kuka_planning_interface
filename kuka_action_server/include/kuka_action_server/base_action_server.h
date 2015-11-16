@@ -16,7 +16,7 @@ class Base_action_server{
 public:
 
     Base_action_server(){
-        bBaseRun = false;
+    //    bBaseRun = false;
     }
 
     /**
@@ -33,7 +33,7 @@ public:
     * @brief bBaseRun : set to false the execute_CB will terminate and return, true will allow
     *                   execute_CB to run.
     */
-   volatile bool bBaseRun;
+   // volatile bool bBaseRun;
 
 };
 

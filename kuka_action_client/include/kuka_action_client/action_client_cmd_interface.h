@@ -42,9 +42,7 @@ private:
 
     bool cmd_interface_callback(kuka_action_client::String_cmd::Request& req,kuka_action_client::String_cmd::Response &res);
 
-    bool action_cmd_callback(const std::string& action_cmd);
-
-    void workThread(std::string action_name);
+    void action_cmd_callback(const std::string& action_cmd);
 
 private:
 
@@ -54,7 +52,7 @@ private:
     boost::thread                      worker_thread;
     ros::ServiceServer                 action_service;
     ros::ServiceServer                 cmd_interface_service;
-    ros::Publisher                     action_server_pub;
+   // ros::Publisher                     action_server_pub;
 
 
     actionlib::SimpleClientGoalState   curr_action_state;
