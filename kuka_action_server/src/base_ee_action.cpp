@@ -5,13 +5,14 @@ namespace asrv{
 Base_ee_action::Base_ee_action(ros::NodeHandle&   nh,
                          const std::string& ee_state_pos_topic,
                          const std::string& ee_cmd_pos_topic,
-                         const std::string& ee_cmd_ft_topic){
+                         const std::string& ee_cmd_ft_topic,
+                         const std::string& ee_cmd_vel_topic){
 
     ee_ft.resize(6);
     sub_        = nh.subscribe<geometry_msgs::PoseStamped>(ee_state_pos_topic, 1, &Base_ee_action::eeStateCallback,this);
     pub_        = nh.advertise<geometry_msgs::PoseStamped>(ee_cmd_pos_topic, 1);
     pub_ft_     = nh.advertise<geometry_msgs::WrenchStamped>(ee_cmd_ft_topic, 1);
-
+    pub_vel_    = nh.advertise<geometry_msgs::TwistStamped>(ee_cmd_vel_topic, 1);
 
 }
 
@@ -58,6 +59,20 @@ void Base_ee_action::sendPose(const tf::Pose& pose_) {
     msg.pose.orientation.w = pose_.getRotation().w();
 
     pub_.publish(msg);
+}
+
+// Send Cartesian Velocities!
+void Base_ee_action::sendVel(const geometry_msgs::Twist& twist_) {
+    geometry_msgs::TwistStamped msg;
+    msg.twist.linear.x = twist_.linear.x;
+    msg.twist.linear.y = twist_.linear.y;
+    msg.twist.linear.z = twist_.linear.z;
+
+    msg.twist.angular.x = twist_.angular.x;
+    msg.twist.angular.y = twist_.angular.y;
+    msg.twist.angular.z = twist_.angular.z;
+
+    pub_vel_.publish(msg);
 }
 
 }

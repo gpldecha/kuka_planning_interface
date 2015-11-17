@@ -39,6 +39,7 @@ public:
 
         ee_state_pos_topic      = topics::EE_STATE_POSE_TOPIC;
         ee_cmd_pos_topic        = topics::EE_CMD_POSE_TOPIC;
+        ee_cmd_vel_topic        = topics::EE_CMD_VEL_TOPIC;
         ee_cmd_ft_topic         = topics::EE_STATE_FT_TOPIC;
     }
 
@@ -50,6 +51,7 @@ public:
     std::string ee_state_pos_topic;
     std::string ee_cmd_pos_topic;
     std::string ee_cmd_ft_topic;
+    std::string ee_cmd_vel_topic;
 
 
 };

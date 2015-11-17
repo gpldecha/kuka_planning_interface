@@ -1,11 +1,14 @@
 #include "kuka_common_action_server/kuka_goto_cart_as.h"
 #include <functional>
+#include <Eigen/Core>
+#include <Eigen/Eigen>
+#include <Eigen/Geometry>
 
 namespace asrv{
 
 Kuka_goto_cart_as::Kuka_goto_cart_as(ros::NodeHandle& nh, const Action_ee_initialiser &action_ee_init)
 
-    : Base_ee_action(nh, action_ee_init.ee_state_pos_topic,action_ee_init.ee_cmd_pos_topic,action_ee_init.ee_cmd_ft_topic)
+    : Base_ee_action(nh, action_ee_init.ee_state_pos_topic,action_ee_init.ee_cmd_pos_topic,action_ee_init.ee_cmd_ft_topic, action_ee_init.ee_cmd_vel_topic)
 {
 
     action_name             = action_ee_init.action_name;
@@ -18,7 +21,7 @@ Kuka_goto_cart_as::Kuka_goto_cart_as(ros::NodeHandle& nh, const Action_ee_initia
     simulation              = true;
     tf_count                = 0;
     dt                      = 1.0/100.0;
-    default_speed           = 0.001; // [m/s]
+    default_speed           = 0.05; // [m/s]
 }
 
 bool Kuka_goto_cart_as::execute_CB(alib_server& as_,alib_feedback& feedback_,const cptrGoal& goal){
@@ -35,8 +38,6 @@ bool Kuka_goto_cart_as::execute_CB(alib_server& as_,alib_feedback& feedback_,con
 }
 
 bool Kuka_goto_cart_as::goto_cartesian_closed_loop(alib_server& as_,alib_feedback& feedback,const cptrGoal& goal){
-
-
 
 
     tf::Transform trans_att;
@@ -56,6 +57,9 @@ bool Kuka_goto_cart_as::goto_cartesian_closed_loop(alib_server& as_,alib_feedbac
 
     ROS_INFO("current_origin (%f %f %f)",current_origin.x(),current_origin.y(),current_origin.z());
     ROS_INFO("current_target (%f %f %f)",target_pos.x(),target_pos.y(),target_pos.z());
+
+    string action_type = goal->action_type;
+    ROS_INFO_STREAM("Action Type: " <<  action_type);
 
     tf::Vector3    velocity;
 
@@ -87,11 +91,11 @@ bool Kuka_goto_cart_as::goto_cartesian_closed_loop(alib_server& as_,alib_feedbac
     ros::Rate loop_rate(rate);
 
     bool success = true;
+    tf::Quaternion angvel, qdiff;
 
     while(ros::ok() /*&& bBaseRun*/) {
 
         br.sendTransform(tf::StampedTransform(trans_att, ros::Time::now(), world_frame, "ee_final"));
-
 
         current_origin = ee_pose.getOrigin();
         current_orient = ee_pose.getRotation();
@@ -105,11 +109,30 @@ bool Kuka_goto_cart_as::goto_cartesian_closed_loop(alib_server& as_,alib_feedbac
         velocity         = speed * velocity.normalize();
 
         des_ee_pose.setOrigin(velocity + current_origin);
-        des_ee_pose.setRotation( current_orient.slerp(target_orient, slerp_t)      );
+        des_ee_pose.setRotation( current_orient.slerp(target_orient, slerp_t));
+
+        if(action_type=="position")
+            sendPose(des_ee_pose);
+
+        if (action_type=="velocity"){
+            des_ee_vel.linear.x = velocity[0];
+            des_ee_vel.linear.y = velocity[1];
+            des_ee_vel.linear.z = velocity[2];
+
+            // Computing angular velocity from quaternion differentiation
+            qdiff =  des_ee_pose.getRotation() - current_orient;
+            Eigen::Vector4f  q  (current_orient.getW(),current_orient.getX(),current_orient.getY(), current_orient.getZ());
+            Eigen::Vector4f  dq (qdiff.getW(),qdiff.getX(),qdiff.getY(),qdiff.getZ());
+            Eigen::Vector3f  w = d2qw(q,dq);
+
+            des_ee_vel.angular.x = w[0];
+            des_ee_vel.angular.y = w[1];
+            des_ee_vel.angular.z = w[2];
+
+            sendVel(des_ee_vel);
+        }
 
         dist_targ_target = acos(abs(target_orient.dot(current_orient)));
-        sendPose(des_ee_pose);
-
         feedback.progress = dist_targ_target;
         as_.publishFeedback(feedback);
         if (as_.isPreemptRequested() || !ros::ok())
@@ -125,7 +148,9 @@ bool Kuka_goto_cart_as::goto_cartesian_closed_loop(alib_server& as_,alib_feedbac
         ROS_INFO_STREAM("Distance to target orient: " << dist_targ_target << " orientationsThreshold: " << orientationThreshold );
         ROS_INFO_STREAM("Difference in Orientation error: " << diff_ori_err);
 
-        if (( dist_targ_origin < reachingThreshold) && (dist_targ_target < orientationThreshold || std::isnan(dist_targ_target) || diff_ori_err < 0.001) ){
+        reachingThreshold = 0.005;
+        orientationThreshold = 0.05;
+        if (( dist_targ_origin < reachingThreshold) && (dist_targ_target < orientationThreshold || std::isnan(dist_targ_target)) ){
             ROS_INFO("reached goal");
             break;
         }
@@ -135,6 +160,25 @@ bool Kuka_goto_cart_as::goto_cartesian_closed_loop(alib_server& as_,alib_feedbac
     }
 
     return success;
+}
+
+Eigen::Vector3f Kuka_goto_cart_as::d2qw(Eigen::Vector4f  q,  Eigen::Vector4f  dq){
+    // -- DQ2W Converts Quaterion rates to angular velocity --//
+    Eigen::Vector3f w;
+    double qw = q(0);
+    double qx = q(1);
+    double qy = q(2);
+    double qz = q(3);
+
+    Eigen::MatrixXf W(3,4);
+    W << -qx,  qw, -qz,  qy,
+         -qy,  qz,  qw, -qx,
+         -qz, -qy,  qx,  qw;
+
+    w = 2 * W * dq;
+
+    std::cout << w << std::endl;
+    return w;
 }
 
 

@@ -19,7 +19,8 @@ Kuka_grav_as::Kuka_grav_as(ros::NodeHandle&  nh,
      Base_ee_action(nh,
                    action_ee_init.ee_state_pos_topic,
                    action_ee_init.ee_cmd_pos_topic,
-                   action_ee_init.ee_cmd_ft_topic)
+                   action_ee_init.ee_cmd_ft_topic,
+                   action_ee_init.ee_cmd_vel_topic)
 {
     action_name = init.action_name;
 }

@@ -30,13 +30,10 @@
 
 #include "kuka_common_action_server/kuka_grav_as.h"
 #include "kuka_common_action_server/kuka_goto_joint_as.h"
+#include "kuka_common_action_server/kuka_goto_cart_as.h"
 
 #include <memory>
 
-/*
-#include "kuka_common_action_server/kuka_goto_cart_as.h"
-#include "kuka_common_action_server/kuka_goto_joint_as.h"
-*/
 #include <std_msgs/String.h>
 #include <functional>
 #include <map>
@@ -103,7 +100,7 @@ private:
     // Default actions made available to the user
     std::shared_ptr<asrv::Kuka_grav_as>                 ptr_kuka_grav_as;
     std::shared_ptr<asrv::Kuka_goto_joint_as>           ptr_kuka_goto_joint_as;
-
+    std::shared_ptr<asrv::Kuka_goto_cart_as>            ptr_kuka_goto_cart_as;
 };
 
 }
