@@ -12,6 +12,6 @@
   		<param name="model_dt" 			value="0.01" />
   		<param name="reachingThreshold" 	value="0.01" />
   		<param name="orientationThreshold" 	value="0.05" />
-		<param name="model_base_path" 		value="/home/guillaume/roscode/catkin_ws/src/kuka/task_motion_planning_cds/epfl-task-models/PouringModels" />
+		<param name="model_base_path" 		value="$(find lasa_action_planners)../epfl-task-models/PouringModels" />
 	</node>
 </launch>
