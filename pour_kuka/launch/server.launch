@@ -4,6 +4,7 @@
 	<arg name="action_server_name"  default="kuka_server" />
 
 	<node name="pour_server_node" pkg="pour_kuka" type="pour_server_node" required="true" output="screen">
+<<<<<<< HEAD
 		<param name="action_server_name" 	value="$(arg action_server_name)"/>
   		<param name="action_mode" 		value="lasa_fixed"/>
   		<param name="simulation" 		value="false" />
@@ -12,5 +13,15 @@
   		<param name="reachingThreshold" 	value="0.01" />
   		<param name="orientationThreshold" 	value="0.05" />
 		<param name="model_base_path" 		value="/home/guillaume/roscode/catkin_ws/src/kuka/task_motion_planning_cds/epfl-task-models/PouringModels" />
+=======
+		<param name="action_server_name" value="$(arg action_server_name)"/>
+  		<param name="action_mode" value="lasa_fixed"/>
+  		<param name="simulation" value="false" />
+  		<param name="world_frame" value="/world_frame" />
+  		<param name="model_dt" value="0.01" />
+  		<param name="reachingThreshold" value="0.01" />
+  		<param name="orientationThreshold" value="0.05" />
+		<param name="model_base_path" value="$(find lasa_action_planners)../epfl-task-models/PouringModels" />
+>>>>>>> f0274bb5d3c90ecef2fe514621d7384590a5ea62
 	</node>
 </launch>
