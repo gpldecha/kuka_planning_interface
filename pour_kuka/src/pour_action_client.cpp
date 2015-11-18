@@ -140,5 +140,64 @@ Create_pour_goals::Create_pour_goals(){
         pour_goals["goto_home"]          = goal;
     }
 
+
+
+
+    {   /// Goto Cartesian Pose in Position
+        ac::Goal goal;
+        goal.action_type = "position";
+
+        geometry_msgs::Transform pour_attr;
+        pour_attr.translation.x  = -0.478;
+        pour_attr.translation.y  = -0.184;
+        pour_attr.translation.z  =  0.248;
+        pour_attr.rotation.x     =  0.133;
+        pour_attr.rotation.y     =  0.112;
+        pour_attr.rotation.z     = -0.673;
+        pour_attr.rotation.w     =  0.719;
+
+        goal.action_name        = "goto_cart";
+        goal.attractor_frame    = pour_attr;
+        pour_goals["goto_cart_pos"] = goal;
+    }
+
+
+    {   /// Goto Cartesian Pose with Velocity Controller
+        ac::Goal goal;
+        goal.action_type = "velocity";
+
+        geometry_msgs::Transform pour_attr;
+        pour_attr.translation.x  = -0.478;
+        pour_attr.translation.y  = -0.184;
+        pour_attr.translation.z  =  0.248;
+        pour_attr.rotation.x     =  0.133;
+        pour_attr.rotation.y     =  0.112;
+        pour_attr.rotation.z     = -0.673;
+        pour_attr.rotation.w     =  0.719;
+
+        goal.action_name        = "goto_cart";
+        goal.attractor_frame    = pour_attr;
+        pour_goals["goto_cart_pour"] = goal;
+    }
+
+
+    {   /// Goto Cartesian Pose with Velocity Controller
+        ac::Goal goal;
+        goal.action_type = "velocity";
+
+        geometry_msgs::Transform home;
+        home.translation.x       = -0.483;
+        home.translation.y       = 0.091;
+        home.translation.z       = 0.361;
+        home.rotation.w          =  0.701;
+        home.rotation.x          = -0.257;
+        home.rotation.y          = -0.227;
+        home.rotation.z          = -0.625;
+
+        goal.action_name        = "goto_cart";
+        goal.attractor_frame    = home;
+        pour_goals["goto_cart_home"] = goal;
+    }
+
 }
 

@@ -118,7 +118,7 @@ void Action_server::add_default_actions(ros::NodeHandle &nh){
         push_back(ptr_kuka_grav_as.get(),"grav_comp");
     }
 
-    // Goto joint cartesian
+    // Goto joint
     {
          asrv::Action_j_initialiser action_j_init;
          action_j_init.action_name = "goto_joint";
@@ -129,6 +129,16 @@ void Action_server::add_default_actions(ros::NodeHandle &nh){
 
          ptr_kuka_goto_joint_as = std::shared_ptr<asrv::Kuka_goto_joint_as>(new asrv::Kuka_goto_joint_as(nh,action_j_init,action_ee_init));
          push_back(ptr_kuka_goto_joint_as.get(),"goto_joint");
+
+    }
+
+    // Goto cartesian
+    {
+         asrv::Action_ee_initialiser action_ee_init;
+         action_ee_init.action_name = "goto_cart";
+
+         ptr_kuka_goto_cart_as = std::shared_ptr<asrv::Kuka_goto_cart_as>(new asrv::Kuka_goto_cart_as(nh,action_ee_init));
+         push_back(ptr_kuka_goto_cart_as.get(),"goto_cart");
 
     }
 

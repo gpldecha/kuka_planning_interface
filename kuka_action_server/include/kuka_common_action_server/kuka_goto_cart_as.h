@@ -12,7 +12,9 @@
 
 #include "kuka_action_server/base_action_server.h"
 #include "kuka_action_server/base_ee_action.h"
+#include "kuka_action_server/base_j_action.h"
 #include "kuka_common_action_server/action_initialiser.h"
+
 
 namespace asrv{
 
@@ -28,6 +30,8 @@ private:
 
     bool goto_cartesian_closed_loop(alib_server& as_,alib_feedback& feedback,const cptrGoal& goal);
 
+    Eigen::Vector3f d2qw(Eigen::Vector4f q,Eigen::Vector4f dq);
+
 private:
 
     inline double bell_velocity(double x,double beta,double off){
@@ -38,20 +42,20 @@ private:
 private:
 
 
-    std::string     action_name;
-    std::string     world_frame;
+    std::string             action_name;
+    std::string             world_frame;
 
-    tf::Pose        des_ee_pose;    /// desired end-effector position
+    tf::Pose                des_ee_pose;    /// desired end-effector position
+    geometry_msgs::Twist    des_ee_vel;     /// desired end-effector velocities
 
+    double                  dt;
+    double                  default_speed;
+    double                  reachingThreshold;
+    double                  orientationThreshold;
 
-    double          dt;
-    double          default_speed;
-    double          reachingThreshold;
-    double          orientationThreshold;
-
-    bool            initial_config;
-    bool            simulation;
-    std::size_t     tf_count;
+    bool                    initial_config;
+    bool                    simulation;
+    std::size_t             tf_count;
 
 };
 

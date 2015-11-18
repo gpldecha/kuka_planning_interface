@@ -18,6 +18,7 @@
 #include <tf/transform_listener.h>
 
 #include "geometry_msgs/PoseStamped.h"
+#include "geometry_msgs/TwistStamped.h"
 #include "geometry_msgs/WrenchStamped.h"
 
 #include "MathLib/MathLib.h"
@@ -35,11 +36,14 @@ public:
     Base_ee_action(ros::NodeHandle&   nh,
                 const std::string& ee_state_pos_topic,
                 const std::string& ee_cmd_pos_topic,
-                const std::string& ee_cmd_ft_topic);
+                const std::string& ee_cmd_ft_topic,
+                const std::string& ee_cmd_vel_topic);
 
     void eeStateCallback(const geometry_msgs::PoseStampedConstPtr& msg);
 
     void sendPose(const tf::Pose& pose_);
+
+    void sendVel(const geometry_msgs::Twist& twist_);
 
     void toPose(const MathLib::Matrix4& mat4, tf::Pose& pose);
 
@@ -48,10 +52,10 @@ public:
 public:
 
     ros::Subscriber                     sub_, sub_ft_;
-    ros::Publisher                      pub_, pub_ft_;
+    ros::Publisher                      pub_, pub_ft_, pub_vel_;
     geometry_msgs::PoseStamped          msg_pose;
     geometry_msgs::WrenchStamped        msg_ft;
-
+    geometry_msgs::TwistStamped         msg_vel;
 
     tf::Pose                            ee_pose;        /// end-effector position from /joint_to_cart estimator
     tf::Pose                            ee_kuka_pose;        /// end-effector position

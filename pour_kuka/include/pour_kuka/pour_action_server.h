@@ -35,7 +35,8 @@ public:
     Pour_action_server(ros::NodeHandle&   nh,
                 const std::string& ee_state_pos_topic = asrv::topics::EE_STATE_POSE_TOPIC,
                 const std::string& ee_cmd_pos_topic   = asrv::topics::EE_CMD_POSE_TOPIC,
-                const std::string& ee_cmd_ft_topic    = asrv::topics::EE_CMD_FT_TOPIC);
+                const std::string& ee_cmd_ft_topic    = asrv::topics::EE_CMD_FT_TOPIC,
+                const std::string& ee_cmd_vel_topic    = asrv::topics::EE_CMD_VEL_TOPIC);
 
     void initialize();
 
