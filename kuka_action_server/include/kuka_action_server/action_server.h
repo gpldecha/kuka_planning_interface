@@ -81,6 +81,8 @@ private:
      */
     void add_default_actions(ros::NodeHandle& nh);
 
+    void print_actions() const;
+
 private:
 
     // NodeHandle instance must be created before this line. Otherwise strange error may occur.

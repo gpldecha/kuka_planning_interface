@@ -44,6 +44,7 @@ void Action_server::executeCB(const cptrGoal& goal){
     ///////////////////////////////////////////////
 
     std::cout<< "EXECUTE REQUESTED ACTION" << std::endl;
+print_actions();
 
     std::string action_type = goal->action_type;
     std::string action_name = goal->action_name;
@@ -130,6 +131,19 @@ void Action_server::add_default_actions(ros::NodeHandle &nh){
          push_back(ptr_kuka_goto_joint_as.get(),"goto_joint");
 
     }
+
+}
+
+void Action_server::print_actions() const{
+    std::string action_type;
+    std::string action_name;
+
+    std::cout<< "print actions (action server)" << std::endl;
+    for(auto it = actions.begin(); it != actions.end(); it++){
+        action_name = it->first;
+        std::cout<< action_name << std::endl;
+    }
+    std::cout<<std::endl;
 
 }
 
