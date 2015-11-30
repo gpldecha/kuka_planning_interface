@@ -36,6 +36,8 @@ private:
     // Cartesian Commands
     tf::Pose        des_ee_pose_from_curr;    /// desired end-effector position
 
+    kuka_fri_bridge::JointStateImpedance j_imp_msg;
+
 
 };
 

@@ -6,7 +6,8 @@ Pour_action_server::Pour_action_server(ros::NodeHandle&   nh,
             const std::string& ee_cmd_pos_topic,
             const std::string& ee_cmd_ft_topic,
             const std::string& ee_cmd_vel_topic)
-    :Base_ee_action(nh, ee_state_pos_topic,ee_cmd_pos_topic,ee_cmd_ft_topic, ee_cmd_vel_topic)
+    :Base_ee_action(nh, ee_state_pos_topic,ee_cmd_pos_topic,ee_cmd_ft_topic, ee_cmd_vel_topic),
+      Base_action_server(nh)
 {
 
 

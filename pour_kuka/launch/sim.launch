@@ -26,6 +26,7 @@
   <!-- NAME OF Output topic -->
   <arg name="output_joints_topic"             value="/r_arm_vel/command"   />   
 
+
    <!-- START JOINT STATE TO CARTESIAN TRANSFORMER-->
    <!--  Robot cartesian state estimator. Estimates end effector pose and force/torques from the joint angles/torques-->
    <include file="$(find state_transformers)/launch/joint_to_cart.launch">
@@ -35,13 +36,21 @@
    </include>
 
    <!-- START CARTESIAN COMMAND TO JOINT STATE TRANSFORMER-->
+   <include file="$(find state_transformers)/launch/state_transformers.launch">
+	   <arg name="robot_name"                value="$(arg robot_name)"   />
+           <arg name="ee_link"                   value="$(arg ee_link)"      /> 
+           <arg name="use_boxy"                  value="$(arg use_boxy)"/>  
+           <arg name="output_joints_topic"       value="$(arg output_joints_topic)"   />    
+   </include>   
+
+   <!-- START CARTESIAN COMMAND TO JOINT STATE TRANSFORMER-->
    <!-- Controller for converting cartesian commands (pose/forces/torques) to joint velocities.-->
-   <include file="$(find state_transformers)/launch/cart_cmd_to_joint_vel.launch">
+   <!--include file="$(find state_transformers)/launch/cart_cmd_to_joint_vel.launch">
    	<arg name="robot_name"                value="$(arg robot_name)"   />
         <arg name="ee_link"                   value="$(arg ee_link)"      /> 
         <arg name="use_boxy"                  value="$(arg use_boxy)"/>  
         <arg name="output_joints_topic"       value="$(arg output_joints_topic)"   />         
-   </include>      
+   </include-->      
 
    <!-- rviz -->
    <node name="rviz" pkg="rviz" type="rviz"  args="-d $(find pour_kuka)/launch/rviz/pour_kuka.rviz"  required="true" />

@@ -14,6 +14,9 @@
 #include "kuka_action_server/base_ee_action.h"
 #include "kuka_action_server/base_j_action.h"
 #include "kuka_common_action_server/action_initialiser.h"
+#include "kuka_common_action_server/speed_generator.h"
+#include "visualise/vis_vector.h"
+#include "visualise/vis_points.h"
 
 
 namespace asrv{
@@ -32,12 +35,9 @@ private:
 
     Eigen::Vector3f d2qw(Eigen::Vector4f q,Eigen::Vector4f dq);
 
-private:
+public:
 
-    inline double bell_velocity(double x,double beta,double off){
-        return 1.0 - exp(-beta * (x+off) * (x+off));
-    }
-
+    Speed_generator         speed_generator;
 
 private:
 
@@ -49,13 +49,16 @@ private:
     geometry_msgs::Twist    des_ee_vel;     /// desired end-effector velocities
 
     double                  dt;
-    double                  default_speed;
+
     double                  reachingThreshold;
     double                  orientationThreshold;
 
-    bool                    initial_config;
-    bool                    simulation;
-    std::size_t             tf_count;
+    opti_rviz::Vis_vectors          rviz_direction;
+    std::vector<opti_rviz::Arrow>   rviz_arrow;
+
+    std::vector<tf::Vector3>        rviz_points;
+    opti_rviz::Vis_points           rviz_points_viz;
+
 
 };
 

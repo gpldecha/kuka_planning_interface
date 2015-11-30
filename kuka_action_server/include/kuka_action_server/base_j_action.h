@@ -13,6 +13,8 @@ namespace asrv{
 
 class Base_j_action{
 
+public:
+
     enum KUKA_PARAM {
         KUKA_NUM_JOINTS = 7
     };
@@ -40,11 +42,13 @@ public:
 
    void sendJointImpedance(const Eigen::VectorXd& j_stiffness);
 
+   void sendJointImpedanceOnly(const Eigen::VectorXd& j_stiffness);
+
 public:
 
     ros::Subscriber                         sub;
     ros::Publisher                          pub;
-    ros::Publisher                          pub_ja;
+  //  ros::Publisher                          pub_ja;
 
     ros::Subscriber                         sub_imp;
     ros::Publisher                          pub_imp;
@@ -56,6 +60,13 @@ public:
     Eigen::VectorXd                         j_velocity;
     Eigen::VectorXd                         j_effort;
     Eigen::VectorXd                         j_stiffness;
+
+private:
+
+    kuka_fri_bridge::JointStateImpedance j_imp_msg;
+    sensor_msgs::JointState              j_msg;
+
+
 
 };
 

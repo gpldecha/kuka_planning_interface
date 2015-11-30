@@ -39,9 +39,6 @@ bool Kuka_action_client::call_action(const std::string& name){
         ac_.sendGoal(it->second);
         ac_.waitForResult();
 
-
-
-
         actionlib::SimpleClientGoalState state = ac_.getState();
 
         ROS_INFO("Action finished: %s",state.toString().c_str());
@@ -122,7 +119,7 @@ void Kuka_action_client::add_default_actions(){
         goal.action_name            = "grav_comp";
         goal.action_type            = "velocity";
         goal.JointStateImpedance    = jointStateImpedance;
-        goals["safe_grav_comp"]       = goal;
+        goals["safe_grav_comp"]     = goal;
     }
 
     // Go Back to Joint Impedance Mode

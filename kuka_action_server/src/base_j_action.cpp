@@ -15,17 +15,21 @@ Base_j_action::Base_j_action(ros::NodeHandle &nh,
     pub = nh.advertise<sensor_msgs::JointState>(j_cmd_pos_topic,1);
 
     ///-- Publish Boolean message that Joint Action is on --///
-    pub_ja = nh.advertise<std_msgs::Bool>(j_action_topic,1);
+   // pub_ja = nh.advertise<std_msgs::Bool>(j_action_topic,1);
 
     ///-- For Custom Msg Joint State Impedance --//
     sub_imp = nh.subscribe<kuka_fri_bridge::JointStateImpedance>(j_state_imp_topic,1,&Base_j_action::jStateImpedanceCallback,this);
     pub_imp = nh.advertise<kuka_fri_bridge::JointStateImpedance>(j_imp_cmd_topic,1);
+
 
     ///-- Joint States --//
     j_position.resize(KUKA_NUM_JOINTS);
     j_velocity.resize(KUKA_NUM_JOINTS);
     j_effort.resize(KUKA_NUM_JOINTS);
     j_stiffness.resize(KUKA_NUM_JOINTS);
+
+
+
 
 }
 
@@ -95,41 +99,50 @@ void Base_j_action::sendJointState(){
 
 }
 
-
-void Base_j_action::sendJointImpedance(const Eigen::VectorXd& j_stiff){
-
+void Base_j_action::sendJointImpedanceOnly(const Eigen::VectorXd& j_stiff){
     assert(j_stiff.size() == KUKA_NUM_JOINTS);
 
-    kuka_fri_bridge::JointStateImpedance j_imp_msg;
-    j_imp_msg.position.resize(j_state.position.size());
-    j_imp_msg.velocity.resize(j_state.velocity.size());
-    j_imp_msg.stiffness.resize(KUKA_NUM_JOINTS);
 
-    if (j_state.position.size() == KUKA_NUM_JOINTS){
-
-        for(std::size_t i = 0; i < KUKA_NUM_JOINTS;i++){
-            j_imp_msg.position[i] = j_state.position[i];
-            j_imp_msg.stiffness[i] = j_stiff[i];
-        }
-
+    for(std::size_t i = 0; i < KUKA_NUM_JOINTS;i++){
+        j_imp_msg.stiffness[i] = j_stiff[i];
     }
-    else{
-
-        for(std::size_t i = 0; i < KUKA_NUM_JOINTS;i++){
-            j_imp_msg.velocity[i] = j_state.velocity[i];
-            j_imp_msg.stiffness[i] = j_stiff[i];
-        }
-
-
-    }
-
-    ///-- Publish joint action message --//
-    std_msgs::Bool j_action_msg;
-    j_action_msg.data = true;
-    pub_ja.publish(j_action_msg);
 
     ///-- Publish joint command --//
     pub_imp.publish(j_imp_msg);
+}
+
+void Base_j_action::sendJointImpedance(const Eigen::VectorXd& j_stiff){
+    assert(j_stiff.size() == KUKA_NUM_JOINTS);
+
+        kuka_fri_bridge::JointStateImpedance j_imp_msg;
+        j_imp_msg.position.resize(j_state.position.size());
+        j_imp_msg.velocity.resize(j_state.velocity.size());
+        j_imp_msg.stiffness.resize(KUKA_NUM_JOINTS);
+
+        if (j_state.position.size() == KUKA_NUM_JOINTS){
+
+            for(std::size_t i = 0; i < KUKA_NUM_JOINTS;i++){
+                j_imp_msg.position[i] = j_state.position[i];
+                j_imp_msg.stiffness[i] = j_stiff[i];
+            }
+
+        }else if(j_state.velocity.size() == KUKA_NUM_JOINTS){
+
+            for(std::size_t i = 0; i < KUKA_NUM_JOINTS;i++){
+                j_imp_msg.velocity[i] = j_state.velocity[i];
+                j_imp_msg.stiffness[i] = j_stiff[i];
+            }
+        }else{
+            ROS_ERROR_STREAM_THROTTLE(1,"Base_j_action::sendJointImpedance   velocity or position == KUKA_NUM_JOINTS");
+        }
+
+        ///-- Publish joint action message --//
+      //  std_msgs::Bool j_action_msg;
+      //  j_action_msg.data = true;
+      //  pub_ja.publish(j_action_msg);
+
+        ///-- Publish joint command --//
+        pub_imp.publish(j_imp_msg);
 
 }
 
